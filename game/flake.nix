@@ -19,12 +19,23 @@
 				gnumake
 				gdb
 				tree
+				pkg-config
+
+				xorg.libX11
+				xorg.libX11.dev
+				xorg.libXcursor.dev
+				xorg.libXi.dev
+				xorg.libXinerama.dev
+				xorg.libXrandr.dev
+				libGL.dev
 			];
 
 			shellHook = ''
 				echo "--- C++ Dev Environment Loaded ---"
 				echo "GCC Version:   $(g++ --version | head -n 1)"
 				echo "CMake Version: $(cmake --version | head -n 1)"
+
+				export LD_LIBRARY_PATH=${pkgs.libGL}/lib:$LD_LIBRARY_PATH
 				set -o vi
 			'';
 		};

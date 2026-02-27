@@ -1,7 +1,20 @@
 #include <print>
 
-#include "engine.hpp"
+#include "engine/engine.hpp"
+#include "raylib.h"
+
+#include "init.hpp"
 
 int main() {
-	std::println("Hello World {}", Foo());
+	InitWindow(800, 600, "Hello World");
+
+	Game::Initialize();
+
+	while (!WindowShouldClose()) {
+		BeginDrawing();
+		ClearBackground(RAYWHITE);
+		EndDrawing();
+	}
+
+	CloseWindow();
 }
