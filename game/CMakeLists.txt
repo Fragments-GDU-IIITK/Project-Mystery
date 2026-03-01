@@ -17,6 +17,8 @@ add_library(engine
 	engine/engine.cpp
 	engine/error.hpp
 	engine/error.cpp
+	engine/perf.hpp
+	engine/perf.cpp
 )
 
 target_link_libraries(engine raylib)

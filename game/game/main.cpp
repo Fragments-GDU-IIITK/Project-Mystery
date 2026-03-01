@@ -1,20 +1,35 @@
 #include <print>
 
 #include "engine/engine.hpp"
-#include "raylib.h"
+#include "engine/perf.hpp"
 
 #include "init.hpp"
 
+#include "raylib.h"
+
+
 int main() {
-	InitWindow(800, 600, "Hello World");
+	Engine::Perf::Init();
 
-	Game::Initialize();
+	{
+		PERF_SCOPE();
 
-	while (!WindowShouldClose()) {
-		BeginDrawing();
-		ClearBackground(RAYWHITE);
-		EndDrawing();
+		InitWindow(800, 600, "Hello World");
+
+		Engine::error_t* err = Game::Initialize();
+		if (err) {
+			TraceLog(LOG_ERROR, "Failed To Initialize Game");
+			exit(EXIT_FAILURE);
+		}
+		TraceLog(LOG_INFO, "Initialized Game Successfully");
+
+		while (!WindowShouldClose()) {
+			BeginDrawing();
+			ClearBackground(RAYWHITE);
+			EndDrawing();
+		}
+		CloseWindow();
 	}
 
-	CloseWindow();
+	Engine::Perf::Shutdown();
 }

@@ -20,6 +20,8 @@
 				gdb
 				tree
 				pkg-config
+				ungoogled-chromium
+				tmux
 
 				xorg.libX11
 				xorg.libX11.dev
@@ -34,6 +36,7 @@
 				echo "--- C++ Dev Environment Loaded ---"
 				echo "GCC Version:   $(g++ --version | head -n 1)"
 				echo "CMake Version: $(cmake --version | head -n 1)"
+				echo "Chromium Version: $(chromium --version | head -n 1)"
 
 				export LD_LIBRARY_PATH=${pkgs.libGL}/lib:$LD_LIBRARY_PATH
 				set -o vi

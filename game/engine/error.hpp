@@ -4,6 +4,9 @@
 
 namespace Engine {
 
+/**
+ * Go style Errors 
+ */
 struct error_t {
 public:
 	std::string_view Error() const { return m_ErrorMsg; }
