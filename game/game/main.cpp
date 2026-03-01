@@ -1,5 +1,8 @@
 #include <print>
 
+#include "rlImGui.h"
+#include "imgui.h"
+
 #include "engine/engine.hpp"
 #include "engine/perf.hpp"
 
@@ -23,11 +26,23 @@ int main() {
 		}
 		TraceLog(LOG_INFO, "Initialized Game Successfully");
 
+		rlImGuiSetup(true);
+
 		while (!WindowShouldClose()) {
 			BeginDrawing();
+			rlImGuiBegin();
+
+			bool open = true;
+			ImGui::ShowDemoWindow(&open);
+
 			ClearBackground(RAYWHITE);
+
+			rlImGuiEnd();
 			EndDrawing();
 		}
+
+		rlImGuiShutdown();
+
 		CloseWindow();
 	}
 
