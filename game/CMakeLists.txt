@@ -42,9 +42,12 @@ add_library(engine STATIC
 	engine/error.cpp
 	engine/perf.hpp
 	engine/perf.cpp
+	engine/scene.hpp
+	engine/scene_manager.hpp
+	engine/scene_manager.cpp
 )
 
-target_link_libraries(engine raylib)
+target_link_libraries(engine raylib imgui)
 
 ## Game
 
@@ -52,6 +55,10 @@ add_executable(game
 	game/main.cpp
 	game/init.hpp
 	game/init.cpp
+	game/scenes.hpp
+	game/scene_mainmenu.cpp
+	game/scene_ingame.cpp
+	game/scene_optionsmenu.cpp
 )
 target_link_libraries(game engine raylib imgui rlImgui)
 target_include_directories(game PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

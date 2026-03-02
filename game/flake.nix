@@ -39,7 +39,7 @@
 				echo "Chromium Version: $(chromium --version | head -n 1)"
 
 				export LD_LIBRARY_PATH=${pkgs.libGL}/lib:$LD_LIBRARY_PATH
-				set -o vi
+				fish
 			'';
 		};
 	};
