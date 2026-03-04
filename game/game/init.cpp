@@ -67,4 +67,9 @@ Engine::error_t* initStates()
 	return nullptr;
 }
 
+void Shutdown()
+{
+	PERF_SCOPE();
+}
+
 } // namespace Game

@@ -12,4 +12,6 @@ namespace Game {
  */
 Engine::error_t* Initialize();
 
+void Shutdown();
+
 } // namespace Game

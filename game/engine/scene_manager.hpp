@@ -19,7 +19,7 @@ public:
 		return instance;
 	}
 
-	void Run();
+	void UpdateAndRender();
 
 	void InitializeScenes(std::vector<std::unique_ptr<Scene>> scenes);
 	void SetNextScene(int scene_index);

@@ -1,10 +1,13 @@
 # Engine
 
-- [ ] Scenes
-	- [ ] Scene Switching
-- [ ] Timing
+- [x] Scenes
+	- [x] Scene Switching
+- [x] Timing
+- [ ] Networking ![Link](https://github.com/yhirose/cpp-httplib/)
+	- [ ] Find a lib
+	- [ ] Make it easy to use
 
 # Game
 
-- [ ] Defining the Scenes
-	- [ ] set the starting scene
+- [x] Defining the Scenes
+	- [x] set the starting scene

@@ -8,7 +8,12 @@ project(MysteryGame
 set(CMAKE_CXX_STANDARD 26)
 
 ## Submodules
+
+### Raylib
 add_subdirectory(raylib)
+
+### CPP-HTTPlib
+add_subdirectory(cpp-httplib)
 
 ### Imgui
 set(IMGUI_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
@@ -18,7 +23,6 @@ add_library(imgui STATIC
 	${IMGUI_SOURCE_DIR}/imgui_demo.cpp
 	${IMGUI_SOURCE_DIR}/imgui_tables.cpp
 	${IMGUI_SOURCE_DIR}/imgui_widgets.cpp
-	# ${IMGUI_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
 	${IMGUI_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
 )
 target_include_directories(imgui PUBLIC ${IMGUI_SOURCE_DIR})
@@ -36,18 +40,27 @@ target_include_directories(rlImgui PUBLIC ${IMGUI_SOURCE_DIR})
 ## Engine
 
 add_library(engine STATIC
-	engine/engine.hpp
+	engine/asset.hpp
+	engine/asset_texture.cpp
+	engine/asset_texture.hpp
+	engine/asset_manager.hpp
+	engine/asset_manager.cpp
 	engine/engine.cpp
-	engine/error.hpp
+	engine/engine.hpp
 	engine/error.cpp
-	engine/perf.hpp
+	engine/error.hpp
+	engine/main_loop.hpp
+	engine/main_loop.cpp
 	engine/perf.cpp
+	engine/perf.hpp
 	engine/scene.hpp
-	engine/scene_manager.hpp
 	engine/scene_manager.cpp
+	engine/scene_manager.hpp
 )
 
-target_link_libraries(engine raylib imgui)
+target_link_libraries(engine raylib imgui httplib rlImgui)
+target_include_directories(engine PUBLIC ${IMGUI_SOURCE_DIR})
+target_include_directories(engine PUBLIC ${RLIMGUI_SOURCE_DIR})
 
 ## Game
 
@@ -60,7 +73,8 @@ add_executable(game
 	game/scene_ingame.cpp
 	game/scene_optionsmenu.cpp
 )
-target_link_libraries(game engine raylib imgui rlImgui)
+
+target_link_libraries(game engine raylib imgui rlImgui httplib)
 target_include_directories(game PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(game PUBLIC ${IMGUI_SOURCE_DIR})
 target_include_directories(game PUBLIC ${RLIMGUI_SOURCE_DIR})

@@ -72,6 +72,14 @@ private:
 };
 
 #define PERF_SCOPE_NAME(name) ::Engine::PerfTimer __perfTimer##__LINE__(name)
+
+/**
+ * TODO(gowrish): I dont know if MSVC has __PRETTY_FUNCTION__
+ * if it does, then set __PFUNC__ to be whatever MSVC has based on the compiler
+ * do something with #ifdefs to figure out what compiler we are on
+ */
+#define __PFUNC__ __PRETTY_FUNCTION__
+
 #define PERF_SCOPE()          PERF_SCOPE_NAME(__PRETTY_FUNCTION__)
 
 } // namespace Engine

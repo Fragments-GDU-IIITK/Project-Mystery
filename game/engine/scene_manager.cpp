@@ -10,7 +10,7 @@ namespace Engine {
 
 // TODO(gowrish): Add logs and tracing to all of these
 
-void SceneManager::Run()
+void SceneManager::UpdateAndRender()
 {
 	PERF_SCOPE();
 
