@@ -20,14 +20,6 @@ PERSONAS: Dict[str, str] = {
 
 
 class MysteryLLM:
-    """
-    LLM engine for Project-Mystery.
-
-    - Loads a small base model (SmolLM-135M-Instruct) for rapid prototyping.
-    - Optionally loads LoRA adapters for different characters using `peft`.
-    - Streams generated text tokens for interactive interrogation.
-    """
-
     def __init__(self) -> None:
         model_name = "HuggingFaceTB/SmolLM-135M-Instruct"
 
@@ -35,7 +27,6 @@ class MysteryLLM:
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         if self.tokenizer.pad_token is None:
-            # Ensure pad token exists for generation.
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
         self.model = AutoModelForCausalLM.from_pretrained(
@@ -44,17 +35,9 @@ class MysteryLLM:
         ).to(self.device)
         self.model.eval()
 
-        # Track which adapters successfully loaded per character_id.
         self._adapters_loaded: Dict[str, bool] = {}
 
     def load_adapters(self) -> None:
-        """
-        Attempt to load LoRA adapters for each character.
-
-        If adapter weights are not present yet, we catch the error and mark
-        the adapter as unavailable so the engine falls back to persona-only
-        prompting.
-        """
         adapter_specs = {
             "intern_leo": "adapters/intern_leo",
             "dr_tara": "adapters/dr_tara",
@@ -62,7 +45,6 @@ class MysteryLLM:
 
         for character_id, adapter_path in adapter_specs.items():
             try:
-                # If this is the first adapter, wrap the base model in PeftModel.
                 if not isinstance(self.model, PeftModel):
                     self.model = PeftModel.from_pretrained(
                         self.model,
@@ -70,7 +52,6 @@ class MysteryLLM:
                         adapter_name=character_id,
                     )
                 else:
-                    # For additional adapters, load into the existing PeftModel.
                     self.model.load_adapter(
                         adapter_path,
                         adapter_name=character_id,
@@ -78,14 +59,9 @@ class MysteryLLM:
 
                 self._adapters_loaded[character_id] = True
             except Exception:
-                # Adapters may not exist yet during early prototyping.
                 self._adapters_loaded[character_id] = False
 
     def _build_persona_prompt(self, character_id: str) -> str:
-        """
-        Returns a persona-specific system instruction used when adapters
-        are missing or as additional guidance even when adapters are present.
-        """
         if character_id == "intern_leo":
             return (
                 "You are Leo, a nervous student intern. "
@@ -111,10 +87,6 @@ class MysteryLLM:
         character_id: str,
         context: Optional[Iterable[str]] = None,
     ) -> str:
-        """
-        Combine persona, retrieved case context, and the player's question
-        into a single prompt for the base model.
-        """
         persona_instruction = self._build_persona_prompt(character_id)
 
         context_blocks: List[str] = []
@@ -149,14 +121,6 @@ class MysteryLLM:
         context: Optional[Iterable[str]] = None,
         max_new_tokens: int = 256,
     ):
-        """
-        Stream generated text for an interrogation turn.
-
-        - Switch to the appropriate LoRA adapter (if loaded) for character_id.
-        - Compose a full prompt with persona + case context + user message.
-        - Yield chunks of text as they are generated.
-        """
-        # Switch LoRA adapter if available; otherwise rely on persona prompting.
         if isinstance(self.model, PeftModel) and self._adapters_loaded.get(character_id):
             try:
                 self.model.set_adapter(character_id)

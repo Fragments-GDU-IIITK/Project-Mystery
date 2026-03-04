@@ -19,16 +19,6 @@ def create_app() -> Flask:
 
     @app.post("/interrogate")
     def interrogate():
-        """
-        Streaming interrogation endpoint.
-
-        Expects JSON payload:
-        {
-            "player_id": "optional_string",
-            "character_id": "string",
-            "message": "string"
-        }
-        """
         payload = request.get_json(silent=True) or {}
         character_id = payload.get("character_id")
         message = payload.get("message")
@@ -36,7 +26,6 @@ def create_app() -> Flask:
         if not character_id or not message:
             return jsonify({"error": "character_id and message are required"}), 400
 
-        # Ensure case data is initialized before querying.
         initialize_case_data()
         context = retrieve_context(query=message, character_id=character_id)
 
@@ -97,3 +86,4 @@ app = create_app()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+
