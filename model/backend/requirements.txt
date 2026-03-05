@@ -1,0 +1,7 @@
+flask
+flask-cors
+chromadb
+transformers
+peft
+torch
+sentence-transformers
