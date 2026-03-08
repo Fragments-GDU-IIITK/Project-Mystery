@@ -78,3 +78,9 @@ target_link_libraries(game engine raylib imgui rlImgui httplib)
 target_include_directories(game PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(game PUBLIC ${IMGUI_SOURCE_DIR})
 target_include_directories(game PUBLIC ${RLIMGUI_SOURCE_DIR})
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+	target_compile_definitions(engine PRIVATE DEBUG)
+	target_compile_definitions(game PRIVATE DEBUG)
+endif()
+

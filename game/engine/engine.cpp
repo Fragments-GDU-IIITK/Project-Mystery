@@ -12,7 +12,18 @@ error_t* Initialize()
 {
 	PERF_SCOPE();
 
-	InitWindow(800, 600, "Hello World");
+	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+
+	Context::Get().window_width = 800;
+	Context::Get().window_height = 600;
+
+	Context::Get().render_target = LoadRenderTexture(Context::Get().window_width, 
+						  							 Context::Get().window_height);
+
+	InitWindow(Context::Get().window_width, 
+			   Context::Get().window_height, 
+			   "Hello World");
+
 	rlImGuiSetup(true);
 
 	Perf::Init();

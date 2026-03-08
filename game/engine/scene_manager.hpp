@@ -20,6 +20,7 @@ public:
 	}
 
 	void UpdateAndRender();
+	void GUI();
 
 	void InitializeScenes(std::vector<std::unique_ptr<Scene>> scenes);
 	void SetNextScene(int scene_index);
