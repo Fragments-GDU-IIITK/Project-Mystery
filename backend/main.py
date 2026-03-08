@@ -33,6 +33,7 @@ def main():
     versioning_info = readVersioningInfo("pyproject.toml")
     database_service = DatabaseService(versioning_info.get("version",""))
     print(database_service.createSession("MySession"))
+    print(database_service.loadSession("sWMvmPZxENIE_3uv"))
     api_server = Server(port=3500,
                         route_prefix=f"/{versioning_info.get("name","")}/{versioning_info.get("version","")}")
     api_server.run()

@@ -3,18 +3,40 @@ from pathlib import Path
 import logging
 from logging import Logger
 
-class DatabaseService:
-    DB_status_code = {
-        100 : {
+class DatabaseStatusCodes:
+    @staticmethod
+    def success(data):
+        return {
+            "status" : 200,
+            "data": data,
+        }
+    @staticmethod
+    def resourceDoesNotExist():
+        return {
+            "status" : 404,
+            "description" : "Resource Does Not Exist"
+        }
+    @staticmethod
+    def resourceAlradyExists():
+        return {
             "status" : 100,
             "description" : "Resource already exists"
-        },
-        101 : {
-            "status" : 101,
-            "description" : "Invalid Collection name"
         }
-    }
+    @staticmethod
+    def invalidCollectionName():
+        return {
+            "status" : 101,
+            "description" : "Invalid Collection Name"
+        }
+    @staticmethod
+    def internalError():
+        return {
+            "status": 500,
+            "message": "Internal database error"
+        }
 
+
+class DatabaseService:
     @staticmethod
     def generate_session_id(text: str) -> str:
         import hashlib, base64
@@ -53,11 +75,10 @@ class DatabaseService:
             
                 session_name : Name of the session. the session ID will be derived from this string
         """
-        session_path = self.__path/session_name
-        if session_path.is_dir():
-            return self.DB_status_code[100]
-                
         session_id = DatabaseService.generate_session_id(session_name)
+        session_path = self.__path/session_id
+        if session_path.is_dir():
+            return DatabaseStatusCodes.resourceAlradyExists()
         self.__client = chromadb.PersistentClient(path = session_path)
         try:
             self.__client.create_collection(
@@ -67,6 +88,45 @@ class DatabaseService:
                 "session_name":session_name,
                 "session_id" : session_id
             })
+            return DatabaseStatusCodes.success({
+                "version" : self.__version,
+                "session_name":session_name,
+                "session_id" : session_id
+            })
         except ValueError as _error:
             self.__logger.error(f" [ERROR] : {_error}")
-            return self.DB_status_code[101]
+            return DatabaseStatusCodes.invalidCollectionName()
+
+    def loadSession(self, session_id: str) -> dict:
+        """
+            Loads an existing session database and initializes runtime components.
+
+            Attributes :
+
+                session_id : Unique identifier of the session to load
+        """
+
+        session_path = self.__path / session_id
+
+        if not session_path.is_dir():
+            return DatabaseStatusCodes.resourceDoesNotExist()
+        try:
+            self.__client = chromadb.PersistentClient(path=str(session_path))
+            metadata_collection = self.__client.get_collection("Database_Metadata")
+            metadata = metadata_collection.metadata
+            # self.__initializeCharacters()
+            # [TODO] : Initialize Characters Here
+
+            return DatabaseStatusCodes.success({
+                "version": metadata.get("version"),
+                "session_name": metadata.get("session_name"),
+                "session_id": metadata.get("session_id")
+            })
+
+        except ValueError as e:
+            self.__logger.error("Invalid collection while loading session: %s", e)
+            return DatabaseStatusCodes.invalidCollectionName()
+
+        except Exception as e:
+            self.__logger.error("Failed to load session %s : %s", session_id, e)
+            return DatabaseStatusCodes.internalError()
