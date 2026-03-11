@@ -14,6 +14,10 @@ enum class Scenes {
 class MainMenu : public Engine::Scene {
 public:
 	virtual void UpdateAndRender() override;
+	virtual void GUI() override
+	{
+		
+	}
 
 	virtual const char* GetName() const { return "Main Menu"; }
 };
@@ -21,6 +25,7 @@ public:
 class InGame : public Engine::Scene {
 public:
 	virtual void UpdateAndRender() override;
+	virtual void GUI() override;
 
 	virtual const char* GetName() const { return "In Game"; }
 };
@@ -28,6 +33,10 @@ public:
 class OptionsMenu : public Engine::Scene {
 public:
 	virtual void UpdateAndRender() override;
+	virtual void GUI() override
+	{
+
+	}
 
 	virtual const char* GetName() const { return "Options Menu"; }
 };

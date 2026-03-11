@@ -16,8 +16,11 @@ void SceneManager::GUI()
 
 	ImGui::Begin("Scene Selector");
 	for (int i = 0; i < m_Scenes.size(); i++) {
-		if (ImGui::Button(TextFormat("Switch to Scene::%s", m_Scenes[i]->GetName()))) {
-			SceneManager::Get().SetNextScene(i);
+		if (ImGui::CollapsingHeader(TextFormat("%s", m_Scenes[i]->GetName()))) {
+			if (ImGui::Button(TextFormat("Switch to %s", m_Scenes[i]->GetName()))) {
+				SceneManager::Get().SetNextScene(i);
+			}
+			m_Scenes[i]->GUI();
 		}
 	}
 	ImGui::End();

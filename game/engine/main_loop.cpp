@@ -13,7 +13,6 @@ namespace Engine {
 void frameBegin()
 {
 	PERF_SCOPE();
-	// BeginDrawing();
 	BeginTextureMode(Context::Get().render_target);
 }
 
@@ -33,13 +32,22 @@ void frameEnd()
 	EndTextureMode();
 
 	BeginDrawing();
+
 	rlImGuiBegin();
+	
+
+	ImGui::DockSpaceOverViewport();
 
 	Engine::SceneManager::Get().GUI();
 
-	DrawTexture(Context::Get().render_target.texture, 0, 0, WHITE);
+	// DrawTexture(Context::Get().render_target.texture, 0, 0, WHITE);
+
+	ImGui::Begin("Main Window");
+	rlImGuiImageRenderTexture(&Context::Get().render_target);
+	ImGui::End();
 
 	rlImGuiEnd();
+
 	EndDrawing();
 }
 
