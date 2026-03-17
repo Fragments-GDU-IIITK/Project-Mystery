@@ -37,23 +37,12 @@ def main():
         level=logging.DEBUG,
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
     )
-
-
     versioning_info = readVersioningInfo("pyproject.toml")
-    character_model_path = Path("src/models/character_model.json")
-    database_service = DatabaseService(versioning_info.get("version",""))
-    session_2 = database_service.createSession("MySession2",character_model_path) 
-    print(session_2)
-    print(database_service.getSessions())
-    print(database_service.loadSession("sWMvmPZxENIE_3uv"))
-    print(database_service.resetSession("sWMvmPZxENIE_3uv"))
-    print(database_service.unloadSession())
-
     api_server = Server(port=3500,
+                        version= versioning_info.get("version",""),
                         route_prefix=f"/{versioning_info.get("name","")}/{versioning_info.get("version","")}")
     api_server.run()
 
 
 if __name__ == "__main__": 
     main()
-# 

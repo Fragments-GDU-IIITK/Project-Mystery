@@ -311,3 +311,15 @@ class DatabaseService:
             except Exception:
                 continue
         return DatabaseStatusCodes.success(sessions)
+    
+
+# Singleton instance
+_db_service_instance: DatabaseService = None
+
+def get_db_service() -> DatabaseService:
+    return _db_service_instance
+
+def init_db_service(version: str, data_path: str = "./session_data") -> DatabaseService:
+    global _db_service_instance
+    _db_service_instance = DatabaseService(version=version, data_path=data_path)
+    return _db_service_instance
