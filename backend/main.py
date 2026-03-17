@@ -1,5 +1,7 @@
 import sys
 import tomli as toml
+import logging
+from pathlib import Path
 
 from src.server import Server
 from src.services.database_service import DatabaseService
@@ -29,15 +31,29 @@ def readVersioningInfo(path : str) -> dict :
 
 
 def main():
-    print("Hello from backend!")
+    # logging setup 
+    logging.basicConfig(
+        filename="server.log",
+        level=logging.DEBUG,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+    )
+
+
     versioning_info = readVersioningInfo("pyproject.toml")
+    character_model_path = Path("src/models/character_model.json")
     database_service = DatabaseService(versioning_info.get("version",""))
-    print(database_service.createSession("MySession"))
+    session_2 = database_service.createSession("MySession2",character_model_path) 
+    print(session_2)
+    print(database_service.getSessions())
     print(database_service.loadSession("sWMvmPZxENIE_3uv"))
+    print(database_service.resetSession("sWMvmPZxENIE_3uv"))
+    print(database_service.unloadSession())
+
     api_server = Server(port=3500,
                         route_prefix=f"/{versioning_info.get("name","")}/{versioning_info.get("version","")}")
     api_server.run()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
     main()
+# 
