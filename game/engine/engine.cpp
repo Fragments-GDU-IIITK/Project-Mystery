@@ -14,14 +14,14 @@ error_t* Initialize()
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
+	Context::Get().window_width = 1280;
+	Context::Get().window_height = 720;
+
 	InitWindow(Context::Get().window_width, 
 			   Context::Get().window_height, 
 			   "Hello World");
 
 	rlImGuiSetup(true);
-
-	Context::Get().window_width = 800;
-	Context::Get().window_height = 600;
 
 	Context::Get().render_target = LoadRenderTexture(Context::Get().window_width, 
 						  							 Context::Get().window_height);

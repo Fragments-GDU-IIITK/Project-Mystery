@@ -10,8 +10,12 @@
 	- [ ] Render the render target to
 		- [ ] Imgui Window if in debug mode
 		- [ ] Main Window when release mode
+- [ ] Chat bot
+- [ ] Save file
 
 # Game
 
 - [x] Defining the Scenes
 	- [x] set the starting scene
+- [ ] Main Menu
+- [ ] In Game

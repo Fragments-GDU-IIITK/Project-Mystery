@@ -9,6 +9,9 @@ set(CMAKE_CXX_STANDARD 26)
 
 ## Submodules
 
+### Json
+add_subdirectory(json)
+
 ### Raylib
 add_subdirectory(raylib)
 
@@ -58,7 +61,7 @@ add_library(engine STATIC
 	engine/scene_manager.hpp
 )
 
-target_link_libraries(engine raylib imgui httplib rlImgui)
+target_link_libraries(engine raylib imgui httplib rlImgui nlohmann_json::nlohmann_json)
 target_include_directories(engine PUBLIC ${IMGUI_SOURCE_DIR})
 target_include_directories(engine PUBLIC ${RLIMGUI_SOURCE_DIR})
 
@@ -74,7 +77,7 @@ add_executable(game
 	game/scene_optionsmenu.cpp
 )
 
-target_link_libraries(game engine raylib imgui rlImgui httplib)
+target_link_libraries(game engine raylib imgui rlImgui httplib nlohmann_json::nlohmann_json)
 target_include_directories(game PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(game PUBLIC ${IMGUI_SOURCE_DIR})
 target_include_directories(game PUBLIC ${RLIMGUI_SOURCE_DIR})

@@ -20,7 +20,9 @@ void SceneManager::GUI()
 			if (ImGui::Button(TextFormat("Switch to %s", m_Scenes[i]->GetName()))) {
 				SceneManager::Get().SetNextScene(i);
 			}
+                        ImGui::Indent();
 			m_Scenes[i]->GUI();
+                        ImGui::Unindent();
 		}
 	}
 	ImGui::End();
