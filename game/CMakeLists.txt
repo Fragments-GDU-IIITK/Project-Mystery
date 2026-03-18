@@ -75,6 +75,7 @@ add_executable(game
 	game/scene_mainmenu.cpp
 	game/scene_ingame.cpp
 	game/scene_optionsmenu.cpp
+	game/global.hpp
 )
 
 target_link_libraries(game engine raylib imgui rlImgui httplib nlohmann_json::nlohmann_json)

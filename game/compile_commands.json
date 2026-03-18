@@ -1,0 +1,290 @@
+[
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++  -I/home/grx/yt/Project-Mystery/game/imgui -g -std=gnu++26 -o CMakeFiles/imgui.dir/imgui/imgui.cpp.o -c /home/grx/yt/Project-Mystery/game/imgui/imgui.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/imgui/imgui.cpp",
+  "output": "CMakeFiles/imgui.dir/imgui/imgui.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++  -I/home/grx/yt/Project-Mystery/game/imgui -g -std=gnu++26 -o CMakeFiles/imgui.dir/imgui/imgui_draw.cpp.o -c /home/grx/yt/Project-Mystery/game/imgui/imgui_draw.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/imgui/imgui_draw.cpp",
+  "output": "CMakeFiles/imgui.dir/imgui/imgui_draw.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++  -I/home/grx/yt/Project-Mystery/game/imgui -g -std=gnu++26 -o CMakeFiles/imgui.dir/imgui/imgui_demo.cpp.o -c /home/grx/yt/Project-Mystery/game/imgui/imgui_demo.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/imgui/imgui_demo.cpp",
+  "output": "CMakeFiles/imgui.dir/imgui/imgui_demo.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++  -I/home/grx/yt/Project-Mystery/game/imgui -g -std=gnu++26 -o CMakeFiles/imgui.dir/imgui/imgui_tables.cpp.o -c /home/grx/yt/Project-Mystery/game/imgui/imgui_tables.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/imgui/imgui_tables.cpp",
+  "output": "CMakeFiles/imgui.dir/imgui/imgui_tables.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++  -I/home/grx/yt/Project-Mystery/game/imgui -g -std=gnu++26 -o CMakeFiles/imgui.dir/imgui/imgui_widgets.cpp.o -c /home/grx/yt/Project-Mystery/game/imgui/imgui_widgets.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/imgui/imgui_widgets.cpp",
+  "output": "CMakeFiles/imgui.dir/imgui/imgui_widgets.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++  -I/home/grx/yt/Project-Mystery/game/imgui -g -std=gnu++26 -o CMakeFiles/imgui.dir/imgui/backends/imgui_impl_opengl3.cpp.o -c /home/grx/yt/Project-Mystery/game/imgui/backends/imgui_impl_opengl3.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/imgui/backends/imgui_impl_opengl3.cpp",
+  "output": "CMakeFiles/imgui.dir/imgui/backends/imgui_impl_opengl3.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/raylib/src -g -std=gnu++26 -o CMakeFiles/rlImgui.dir/rlImGui/rlImGui.cpp.o -c /home/grx/yt/Project-Mystery/game/rlImGui/rlImGui.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/rlImGui/rlImGui.cpp",
+  "output": "CMakeFiles/rlImgui.dir/rlImGui/rlImGui.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DCPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO -DDEBUG -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/rlImGui -I/home/grx/yt/Project-Mystery/game/raylib/src -I/home/grx/yt/Project-Mystery/game/json/include -isystem /home/grx/yt/Project-Mystery/game/cpp-httplib -g -std=gnu++26 -o CMakeFiles/engine.dir/engine/asset_texture.cpp.o -c /home/grx/yt/Project-Mystery/game/engine/asset_texture.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/engine/asset_texture.cpp",
+  "output": "CMakeFiles/engine.dir/engine/asset_texture.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DCPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO -DDEBUG -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/rlImGui -I/home/grx/yt/Project-Mystery/game/raylib/src -I/home/grx/yt/Project-Mystery/game/json/include -isystem /home/grx/yt/Project-Mystery/game/cpp-httplib -g -std=gnu++26 -o CMakeFiles/engine.dir/engine/asset_manager.cpp.o -c /home/grx/yt/Project-Mystery/game/engine/asset_manager.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/engine/asset_manager.cpp",
+  "output": "CMakeFiles/engine.dir/engine/asset_manager.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DCPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO -DDEBUG -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/rlImGui -I/home/grx/yt/Project-Mystery/game/raylib/src -I/home/grx/yt/Project-Mystery/game/json/include -isystem /home/grx/yt/Project-Mystery/game/cpp-httplib -g -std=gnu++26 -o CMakeFiles/engine.dir/engine/engine.cpp.o -c /home/grx/yt/Project-Mystery/game/engine/engine.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/engine/engine.cpp",
+  "output": "CMakeFiles/engine.dir/engine/engine.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DCPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO -DDEBUG -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/rlImGui -I/home/grx/yt/Project-Mystery/game/raylib/src -I/home/grx/yt/Project-Mystery/game/json/include -isystem /home/grx/yt/Project-Mystery/game/cpp-httplib -g -std=gnu++26 -o CMakeFiles/engine.dir/engine/error.cpp.o -c /home/grx/yt/Project-Mystery/game/engine/error.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/engine/error.cpp",
+  "output": "CMakeFiles/engine.dir/engine/error.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DCPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO -DDEBUG -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/rlImGui -I/home/grx/yt/Project-Mystery/game/raylib/src -I/home/grx/yt/Project-Mystery/game/json/include -isystem /home/grx/yt/Project-Mystery/game/cpp-httplib -g -std=gnu++26 -o CMakeFiles/engine.dir/engine/main_loop.cpp.o -c /home/grx/yt/Project-Mystery/game/engine/main_loop.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/engine/main_loop.cpp",
+  "output": "CMakeFiles/engine.dir/engine/main_loop.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DCPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO -DDEBUG -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/rlImGui -I/home/grx/yt/Project-Mystery/game/raylib/src -I/home/grx/yt/Project-Mystery/game/json/include -isystem /home/grx/yt/Project-Mystery/game/cpp-httplib -g -std=gnu++26 -o CMakeFiles/engine.dir/engine/perf.cpp.o -c /home/grx/yt/Project-Mystery/game/engine/perf.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/engine/perf.cpp",
+  "output": "CMakeFiles/engine.dir/engine/perf.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DCPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO -DDEBUG -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/rlImGui -I/home/grx/yt/Project-Mystery/game/raylib/src -I/home/grx/yt/Project-Mystery/game/json/include -isystem /home/grx/yt/Project-Mystery/game/cpp-httplib -g -std=gnu++26 -o CMakeFiles/engine.dir/engine/scene_manager.cpp.o -c /home/grx/yt/Project-Mystery/game/engine/scene_manager.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/engine/scene_manager.cpp",
+  "output": "CMakeFiles/engine.dir/engine/scene_manager.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DCPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO -DDEBUG -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/rlImGui -I/home/grx/yt/Project-Mystery/game/raylib/src -I/home/grx/yt/Project-Mystery/game/json/include -isystem /home/grx/yt/Project-Mystery/game/cpp-httplib -g -std=gnu++26 -o CMakeFiles/game.dir/game/main.cpp.o -c /home/grx/yt/Project-Mystery/game/game/main.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/game/main.cpp",
+  "output": "CMakeFiles/game.dir/game/main.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DCPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO -DDEBUG -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/rlImGui -I/home/grx/yt/Project-Mystery/game/raylib/src -I/home/grx/yt/Project-Mystery/game/json/include -isystem /home/grx/yt/Project-Mystery/game/cpp-httplib -g -std=gnu++26 -o CMakeFiles/game.dir/game/init.cpp.o -c /home/grx/yt/Project-Mystery/game/game/init.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/game/init.cpp",
+  "output": "CMakeFiles/game.dir/game/init.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DCPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO -DDEBUG -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/rlImGui -I/home/grx/yt/Project-Mystery/game/raylib/src -I/home/grx/yt/Project-Mystery/game/json/include -isystem /home/grx/yt/Project-Mystery/game/cpp-httplib -g -std=gnu++26 -o CMakeFiles/game.dir/game/scene_mainmenu.cpp.o -c /home/grx/yt/Project-Mystery/game/game/scene_mainmenu.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/game/scene_mainmenu.cpp",
+  "output": "CMakeFiles/game.dir/game/scene_mainmenu.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DCPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO -DDEBUG -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/rlImGui -I/home/grx/yt/Project-Mystery/game/raylib/src -I/home/grx/yt/Project-Mystery/game/json/include -isystem /home/grx/yt/Project-Mystery/game/cpp-httplib -g -std=gnu++26 -o CMakeFiles/game.dir/game/scene_ingame.cpp.o -c /home/grx/yt/Project-Mystery/game/game/scene_ingame.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/game/scene_ingame.cpp",
+  "output": "CMakeFiles/game.dir/game/scene_ingame.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/g++ -DCPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO -DDEBUG -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game -I/home/grx/yt/Project-Mystery/game/imgui -I/home/grx/yt/Project-Mystery/game/rlImGui -I/home/grx/yt/Project-Mystery/game/raylib/src -I/home/grx/yt/Project-Mystery/game/json/include -isystem /home/grx/yt/Project-Mystery/game/cpp-httplib -g -std=gnu++26 -o CMakeFiles/game.dir/game/scene_optionsmenu.cpp.o -c /home/grx/yt/Project-Mystery/game/game/scene_optionsmenu.cpp",
+  "file": "/home/grx/yt/Project-Mystery/game/game/scene_optionsmenu.cpp",
+  "output": "CMakeFiles/game.dir/game/scene_optionsmenu.cpp.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/raylib/src -isystem /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=gnu99 -o CMakeFiles/raylib.dir/raudio.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/raudio.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/raudio.c",
+  "output": "raylib/raylib/CMakeFiles/raylib.dir/raudio.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/raylib/src -isystem /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=gnu99 -o CMakeFiles/raylib.dir/rcore.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/rcore.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/rcore.c",
+  "output": "raylib/raylib/CMakeFiles/raylib.dir/rcore.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/raylib/src -isystem /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=gnu99 -o CMakeFiles/raylib.dir/rmodels.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/rmodels.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/rmodels.c",
+  "output": "raylib/raylib/CMakeFiles/raylib.dir/rmodels.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/raylib/src -isystem /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=gnu99 -o CMakeFiles/raylib.dir/rshapes.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/rshapes.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/rshapes.c",
+  "output": "raylib/raylib/CMakeFiles/raylib.dir/rshapes.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/raylib/src -isystem /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=gnu99 -o CMakeFiles/raylib.dir/rtext.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/rtext.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/rtext.c",
+  "output": "raylib/raylib/CMakeFiles/raylib.dir/rtext.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -I/home/grx/yt/Project-Mystery/game/raylib/src -isystem /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=gnu99 -o CMakeFiles/raylib.dir/rtextures.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/rtextures.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/rtextures.c",
+  "output": "raylib/raylib/CMakeFiles/raylib.dir/rtextures.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/context.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/context.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/context.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/context.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/init.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/init.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/init.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/init.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/input.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/input.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/input.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/input.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/monitor.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/monitor.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/monitor.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/monitor.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/platform.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/platform.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/platform.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/platform.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/vulkan.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/vulkan.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/vulkan.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/vulkan.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/window.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/window.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/window.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/window.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/egl_context.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/egl_context.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/egl_context.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/egl_context.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/osmesa_context.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/osmesa_context.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/osmesa_context.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/osmesa_context.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_init.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/null_init.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/null_init.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/null_init.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_monitor.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/null_monitor.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/null_monitor.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/null_monitor.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_window.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/null_window.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/null_window.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/null_window.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_joystick.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/null_joystick.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/null_joystick.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/null_joystick.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_module.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/posix_module.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/posix_module.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/posix_module.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_time.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/posix_time.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/posix_time.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/posix_time.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_thread.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/posix_thread.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/posix_thread.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/posix_thread.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/x11_init.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/x11_init.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/x11_init.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/x11_init.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/x11_monitor.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/x11_monitor.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/x11_monitor.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/x11_monitor.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/x11_window.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/x11_window.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/x11_window.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/x11_window.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/xkb_unicode.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/xkb_unicode.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/xkb_unicode.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/xkb_unicode.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/glx_context.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/glx_context.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/glx_context.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/glx_context.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/linux_joystick.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/linux_joystick.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/linux_joystick.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/linux_joystick.c.o"
+},
+{
+  "directory": "/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src",
+  "command": "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0/bin/gcc -D_DEFAULT_SOURCE -D_GLFW_X11 -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/include -I/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src -I/home/grx/yt/Project-Mystery/game/build/raylib/raylib/external/glfw/src -fno-strict-aliasing -Werror=implicit-function-declaration -Werror=pointer-arith  -g -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_poll.c.o -c /home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/posix_poll.c",
+  "file": "/home/grx/yt/Project-Mystery/game/raylib/src/external/glfw/src/posix_poll.c",
+  "output": "raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/posix_poll.c.o"
+}
+]
