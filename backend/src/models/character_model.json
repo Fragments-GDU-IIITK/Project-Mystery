@@ -1,0 +1,24 @@
+{
+    "version": "0.1.0",
+    "characters" :[
+        {
+            "name" : "scientist",
+            "character_id": "scientist_001",
+            "world_knowledge" : 
+            [
+                "Founder of Hello World Incorporated",
+                "He is 33 years old",
+                "Bachelor, doesn't have time for romance"
+            ]
+        },
+        {
+            "name" : "remy",
+            "character_id": "rat_001",
+            "world_knowledge" : [
+                "Born in the sewers of france",
+                "Has quite an aptitude for cooking and puppeteering",
+                "Loves his family very much"
+            ]
+        }
+    ] 
+}
