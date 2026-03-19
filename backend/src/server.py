@@ -5,11 +5,6 @@ from pathlib import Path
 from src.resources.session import create_session_namespace
 from src.services.database_service import init_db_service
 
-class BackendAPI(Resource):
-    def get(self):
-        return {"message": "hello"}
-
-
 class Server:
     def __init__(self,version : str, name: str = __name__, port: int = 3000, route_prefix = ""):
         self.__port = port
