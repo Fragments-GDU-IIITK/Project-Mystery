@@ -21,15 +21,15 @@ def create_session_namespace(character_model_path: Path) -> Namespace:
                 character_model_path=character_model_path
             )
 
-    @ns.route("/<string:session_id>")
+    @ns.route("/<string:session_id>/load")
     class Session(Resource):
         def post(self, session_id):
             """Load a session"""
             return get_db_service().loadSession(session_id)
 
-    @ns.route("/<string:session_id>/unload")
+    @ns.route("/unload")
     class SessionUnload(Resource):
-        def post(self, session_id):
+        def post(self):
             """Unload the current session from memory"""
             return get_db_service().unloadSession()
 

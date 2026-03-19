@@ -38,8 +38,7 @@ def main():
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
     )
     versioning_info = readVersioningInfo("pyproject.toml")
-    api_server = Server(port=3500,
-                        version= versioning_info.get("version",""),
+    api_server = Server(version= versioning_info.get("version",""),
                         route_prefix=f"/{versioning_info.get("name","")}/{versioning_info.get("version","")}")
     api_server.run()
 
