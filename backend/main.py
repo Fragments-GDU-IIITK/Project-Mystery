@@ -4,7 +4,8 @@ import logging
 from pathlib import Path
 
 from src.server import Server
-from src.services.database_service import DatabaseService
+from src.services.database_service import get_db_service 
+from src.services.slm_service import SLM_Service
 
 def readVersioningInfo(path : str) -> dict :
     """
@@ -40,6 +41,21 @@ def main():
     versioning_info = readVersioningInfo("pyproject.toml")
     api_server = Server(version= versioning_info.get("version",""),
                         route_prefix=f"/{versioning_info.get("name","")}/{versioning_info.get("version","")}")
+    
+    # ******* Test Code *******
+    get_db_service().loadSession("Oq_AZ99Zh7RZEtEP")
+    get_db_service().add_conv_memory({
+        "player" : "What are you doing?",
+        "llm" : "I am the best scientist in the world, who are you to question my authority"
+    },"scientist_001")
+    
+    slm_service = SLM_Service()
+    print(slm_service.prompt_composer("Hello, Tell me about yourself...", "scientist_001"))
+
+    get_db_service().resetSession("Oq_AZ99Zh7RZEtEP")
+    get_db_service().unloadSession()
+    # ******* Test Code *******
+
     api_server.run()
 
 
