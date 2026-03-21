@@ -213,3 +213,5 @@ __marimo__/
 
 # Project-Mystery local data
 model/database/chroma_data/
+database/chroma_data/
+llm_standalone/chroma_data/
