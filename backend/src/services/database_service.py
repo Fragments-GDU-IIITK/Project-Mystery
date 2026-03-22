@@ -399,7 +399,7 @@ class DatabaseService:
                 if character_id == character.get('character_id',''):
                     collection_name = character['character_id'] + self.__conversational_mem_suffix
                     collection : chromadb.Collection = self.__client.get_collection(collection_name)
-                    formatted_conv = f"Player: {conversation['player']}\nYou: {conversation['llm']}"
+                    formatted_conv = f"The player asked {conversation['player']}\nI replied {conversation['llm']}"
                     collection.add(
                         ids=[str(uuid.uuid4())],
                         documents=[formatted_conv]

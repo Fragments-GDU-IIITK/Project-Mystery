@@ -6,18 +6,20 @@
             "character_id": "scientist_001",
             "world_knowledge" : 
             [
-                "Founder of Hello World Incorporated",
-                "He is 33 years old",
-                "Bachelor, doesn't have time for romance"
+                "My name is Sebastien and I am one of the greatest minds in the world",
+                "I am the Founder of Hello World Incorporated",
+                "I am just 33 years old",
+                "I prefer to be a Bachelor, why? because romance is a time killer"
             ]
         },
         {
             "name" : "remy",
             "character_id": "rat_001",
             "world_knowledge" : [
-                "Born in the sewers of france",
-                "Has quite an aptitude for cooking and puppeteering",
-                "Loves his family very much"
+                "My name is remy and I am a rat who loves cooking",
+                "Born in the sewers of france, I had to leave a hard life afraid of people",
+                "I have quite an aptitude for cooking and puppeteering",
+                "I love my family very much, but often they pull me back fom my dreams"
             ]
         }
     ] 
