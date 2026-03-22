@@ -43,17 +43,18 @@ def main():
                         route_prefix=f"/{versioning_info.get("name","")}/{versioning_info.get("version","")}")
     
     # ******* Test Code *******
-    get_db_service().loadSession("Oq_AZ99Zh7RZEtEP")
-    get_db_service().add_conv_memory({
-        "player" : "What are you doing?",
-        "llm" : "I am the best scientist in the world, who are you to question my authority"
-    },"scientist_001")
-    
-    slm_service = SLM_Service()
-    print(slm_service.prompt_composer("Hello, Tell me about yourself...", "scientist_001"))
 
-    get_db_service().resetSession("Oq_AZ99Zh7RZEtEP")
-    get_db_service().unloadSession()
+    # get_db_service().loadSession("Oq_AZ99Zh7RZEtEP")
+    # slm_service = SLM_Service()
+    # collected_chunks = []
+    # generator = slm_service.prompt("Hello, Tell me about yourself...", "scientist_001",get_db_service().add_conv_memory)
+    # for chunk in generator:
+    #     text = chunk.decode("utf-8")
+    #     collected_chunks.append(text)
+    # print("".join(collected_chunks))
+
+    # get_db_service().resetSession("Oq_AZ99Zh7RZEtEP")
+    # get_db_service().unloadSession()
     # ******* Test Code *******
 
     api_server.run()
