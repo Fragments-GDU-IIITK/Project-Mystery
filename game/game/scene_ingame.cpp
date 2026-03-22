@@ -3,8 +3,6 @@
 #include "raylib.h"
 #include "imgui.h"
 
-#include "global.hpp"
-
 #include <vector>
 #include <string>
 
@@ -12,29 +10,42 @@ namespace Game {
 
 void InGame::UpdateAndRender()
 {
-	ClearBackground(BLACK);
-	DrawText("InGame", 0, 0, 20, RED);
+    ClearBackground(BLACK);
+    DrawText("InGame", 0, 0, 20, RED);
+
+    Global::Get().GoodGuy.Update();
+    Global::Get().BadGuy.Update();
 }
 
-void drawChatBot(Npc& npc)
+void InGame::drawChatBot(Npc& npc)
 {
     if (ImGui::CollapsingHeader(npc.Name.c_str())) {
         // Input Area
-        if (ImGui::InputTextWithHint("##Message NPC1", "Write a message...", 
+
+        auto input_field_flags = 
+            (npc.GetNetworkState() == Npc::NetworkState::kIdle)
+            ? ImGuiInputTextFlags_EnterReturnsTrue 
+            : ImGuiInputTextFlags_ReadOnly;
+
+        if (ImGui::InputTextWithHint(TextFormat("##Message %s", npc.Name.c_str()), 
+                                     "Write a message...", 
                                      npc.InputField, IM_ARRAYSIZE(npc.InputField), 
-                                     ImGuiInputTextFlags_EnterReturnsTrue))
+                                     input_field_flags))
         {
-            npc.Chat.emplace_back(npc.InputField, "");
-            npc.InputField[0] = '\0';
+            npc.GetResponse();
         }
 
         ImGui::SameLine(); 
-        if(ImGui::Button("Clear")) { npc.InputField[0] = '\0'; }
+
+        if (ImGui::Button("Clear")) { npc.InputField[0] = '\0'; }
 
         // Preview Section
         ImGui::TextDisabled("Live Preview:");
-        ImGui::BeginChild("Chat with NPC 1", ImVec2(0, 300), true);
-        for (const auto& [message, reply] : npc.Chat) {
+        ImGui::BeginChild(TextFormat("Chat with %s", npc.Name.c_str()), 
+                          ImVec2(0, 300), true);
+
+        for (const auto& [message, reply] : npc.Chat)
+        {
             ImGui::TextWrapped("You: %s\n", message.c_str());
             ImGui::TextWrapped("%s: %s\n", npc.Name.c_str(), reply.c_str());
         }
