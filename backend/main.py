@@ -4,7 +4,8 @@ import logging
 from pathlib import Path
 
 from src.server import Server
-from src.services.database_service import DatabaseService
+from src.services.database_service import get_db_service 
+from src.services.slm_service import SLM_Service
 
 def readVersioningInfo(path : str) -> dict :
     """
@@ -40,6 +41,22 @@ def main():
     versioning_info = readVersioningInfo("pyproject.toml")
     api_server = Server(version= versioning_info.get("version",""),
                         route_prefix=f"/{versioning_info.get("name","")}/{versioning_info.get("version","")}")
+    
+    # ******* Test Code *******
+
+    # get_db_service().loadSession("Oq_AZ99Zh7RZEtEP")
+    # slm_service = SLM_Service()
+    # collected_chunks = []
+    # generator = slm_service.prompt("Hello, Tell me about yourself...", "scientist_001",get_db_service().add_conv_memory)
+    # for chunk in generator:
+    #     text = chunk.decode("utf-8")
+    #     collected_chunks.append(text)
+    # print("".join(collected_chunks))
+
+    # get_db_service().resetSession("Oq_AZ99Zh7RZEtEP")
+    # get_db_service().unloadSession()
+    # ******* Test Code *******
+
     api_server.run()
 
 

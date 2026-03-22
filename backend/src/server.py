@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restx import Resource, Api, Namespace
 from pathlib import Path
 
+from src.resources.chat import create_chat_namespace
 from src.resources.session import create_session_namespace
 from src.services.database_service import init_db_service
 
@@ -12,8 +13,12 @@ class Server:
         self.__app = Flask(self.__name)
         self.__api = Api(self.__app,prefix = route_prefix)
         init_db_service(version=version)
-        ns = create_session_namespace(character_model_path=Path(__file__).parent/"models/character_model.json")
-        self.__api.add_namespace(ns,"/sessions")
+        ns_sessions = create_session_namespace(character_model_path=Path(__file__).parent/"models/character_model.json")
+        self.__api.add_namespace(ns_sessions,"/sessions")
+        ns_chat = create_chat_namespace()
+        self.__api.add_namespace(ns_chat,"/chat")
+        
+        
     
 
     def run(self):
