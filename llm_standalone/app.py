@@ -3,6 +3,7 @@ from threading import Thread
 
 import chromadb
 import torch
+from peft import PeftModel
 from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
 from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
@@ -30,23 +31,17 @@ def init_collection():
     data_path.mkdir(parents=True, exist_ok=True)
     client = chromadb.PersistentClient(path=str(data_path))
     collection = client.get_or_create_collection(name="case_kottayam_star")
-    existing = collection.get(include=[])
-    existing_ids = set(existing.get("ids", []))
+    if collection.count() > 0:
+        return collection
     ids = [f"fact_{idx}" for idx in range(len(FACTS))]
-    docs_to_add = []
-    ids_to_add = []
-    for doc_id, text in zip(ids, FACTS):
-        if doc_id not in existing_ids:
-            ids_to_add.append(doc_id)
-            docs_to_add.append(text)
-    if docs_to_add:
-        collection.add(ids=ids_to_add, documents=docs_to_add)
+    collection.add(ids=ids, documents=FACTS)
     return collection
 
 
 class InterrogationLLM:
     def __init__(self, collection):
         self.collection = collection
+        self.adapters_loaded = {}
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.tokenizer = AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM-135M-Instruct")
         if self.tokenizer.pad_token is None:
@@ -56,6 +51,32 @@ class InterrogationLLM:
             torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
         ).to(self.device)
         self.model.eval()
+        self.load_adapters()
+
+    def load_adapters(self):
+        adapter_specs = {
+            "intern_leo": Path(__file__).resolve().parent / "adapters" / "intern_leo",
+            "dr_tara": Path(__file__).resolve().parent / "adapters" / "dr_tara",
+        }
+        for character_id, adapter_path in adapter_specs.items():
+            try:
+                if not adapter_path.exists():
+                    self.adapters_loaded[character_id] = False
+                    continue
+                if not isinstance(self.model, PeftModel):
+                    self.model = PeftModel.from_pretrained(
+                        self.model,
+                        str(adapter_path),
+                        adapter_name=character_id,
+                    )
+                else:
+                    self.model.load_adapter(
+                        str(adapter_path),
+                        adapter_name=character_id,
+                    )
+                self.adapters_loaded[character_id] = True
+            except Exception:
+                self.adapters_loaded[character_id] = False
 
     def retrieve_context(self, query, n_results=4):
         result = self.collection.query(query_texts=[query], n_results=n_results)
@@ -70,10 +91,11 @@ class InterrogationLLM:
             f"{persona}\n\n"
             f"Case context facts:\n{context_block}\n\n"
             f"User message:\n{prompt}\n\n"
-            f"Answer in character."
+            f"Answer in character with short, natural dialogue."
         )
         try:
-            self.model.set_adapter(character_id)
+            if isinstance(self.model, PeftModel) and self.adapters_loaded.get(character_id):
+                self.model.set_adapter(character_id)
         except Exception:
             pass
         inputs = self.tokenizer(final_prompt, return_tensors="pt", padding=True)
@@ -81,10 +103,13 @@ class InterrogationLLM:
         streamer = TextIteratorStreamer(self.tokenizer, skip_prompt=True, skip_special_tokens=True)
         kwargs = {
             **inputs,
-            "max_new_tokens": 256,
+            "max_new_tokens": 160,
             "temperature": 0.7,
             "top_p": 0.9,
             "do_sample": True,
+            "repetition_penalty": 1.2,
+            "eos_token_id": self.tokenizer.eos_token_id,
+            "pad_token_id": self.tokenizer.pad_token_id,
             "streamer": streamer,
         }
         thread = Thread(target=self.model.generate, kwargs=kwargs)
