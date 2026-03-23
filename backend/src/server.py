@@ -11,6 +11,11 @@ class Server:
         self.__port = port
         self.__name = name
         self.__app = Flask(self.__name)
+
+        self.__app.config['SWAGGER_UI_BUNDLE_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-bundle.min.js'
+        self.__app.config['SWAGGER_UI_STANDALONE_PRESET_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-standalone-preset.min.js'
+        self.__app.config['SWAGGER_UI_CSS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui.min.css'
+
         self.__api = Api(self.__app,prefix = route_prefix)
         init_db_service(version=version)
         ns_sessions = create_session_namespace(character_model_path=Path(__file__).parent/"models/character_model.json")
