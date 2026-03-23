@@ -7,6 +7,9 @@ from src.server import Server
 from src.services.database_service import get_db_service 
 from src.services.slm_service import SLM_Service
 
+import flask_restx.apidoc as apidoc_module
+from flask import render_template_string
+
 def readVersioningInfo(path : str) -> dict :
     """
         Read versioning information from pyproject.toml
@@ -28,7 +31,12 @@ def readVersioningInfo(path : str) -> dict :
             "description" : "unknown"
         }
 
-        
+
+CDN = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0"
+
+@apidoc_module.apidoc.add_app_template_global
+def swagger_static(filename):
+    return f"{CDN}/{filename}"
 
 
 def main():
