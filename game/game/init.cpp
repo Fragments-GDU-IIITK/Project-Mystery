@@ -1,11 +1,18 @@
 #include "init.hpp"
+#include "engine/asset_font.hpp"
+#include "engine/asset_manager.hpp"
+#include "raylib.h"
 #include "scenes.hpp"
+
+#include "assets.hpp"
 
 #include <vector>
 #include <memory>
 
 #include "engine/scene_manager.hpp"
 #include "engine/perf.hpp"
+
+#include "scene_ingame.hpp"
 
 namespace Game {
 
@@ -18,6 +25,8 @@ Engine::error_t* Initialize()
 	PERF_SCOPE();
 
 	Engine::error_t* err{nullptr};
+
+    SetExitKey(0);
 
 	err = initLoggers();
 	if (err) return err;
@@ -41,7 +50,22 @@ Engine::error_t* initLoggers()
 Engine::error_t* loadResources()
 {
 	PERF_SCOPE();
-	return nullptr;
+
+    Engine::error_t* err{nullptr};
+
+    #define LOAD_ASSET(_type, _id, _path)                                                   \
+        err = Engine::AssetManager::Get().LoadAsset<_type>(static_cast<int>(_id), _path);   \
+        if (err) return err;
+
+        LOAD_ASSET(Engine::Font, AssetID::kTypeWriterFont1, "./res/1942.ttf");
+        LOAD_ASSET(Engine::Font, AssetID::kTypeWriterFont2, "./res/SpecialElite.ttf");
+        LOAD_ASSET(Engine::Font, AssetID::kTypeWriterFont3, "./res/SplendidB.ttf");
+        LOAD_ASSET(Engine::Font, AssetID::kTypeWriterFont4, "./res/SplendidN.ttf");
+        LOAD_ASSET(Engine::Font, AssetID::kTypeWriterFont5, "./res/atwriter.ttf");
+
+    #undef LOAD_ASSET
+
+	return err;
 }
 
 Engine::error_t* initStates()
@@ -62,7 +86,7 @@ Engine::error_t* initStates()
 
 	Engine::SceneManager::Get().InitializeScenes(std::move(scenes));
 
-	Engine::SceneManager::Get().SetNextScene(static_cast<int>(Scenes::kMainMenu));
+	Engine::SceneManager::Get().SetNextScene(static_cast<int>(Scenes::kInGame));
 
 	return nullptr;
 }

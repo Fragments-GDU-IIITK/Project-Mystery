@@ -20,6 +20,8 @@ public:
 
 	// For Debugging
 	virtual const char* GetName() const = 0;
+
+    virtual ~Scene() = default;
 };
 
 } // namespace Engine

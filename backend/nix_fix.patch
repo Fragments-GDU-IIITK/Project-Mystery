@@ -1,0 +1,51 @@
+diff --git a/backend/main.py b/backend/main.py
+index ae5272b..651fd93 100644
+--- a/backend/main.py
++++ b/backend/main.py
+@@ -7,6 +7,9 @@ from src.server import Server
+ from src.services.database_service import get_db_service 
+ from src.services.slm_service import SLM_Service
+ 
++import flask_restx.apidoc as apidoc_module
++from flask import render_template_string
++
+ def readVersioningInfo(path : str) -> dict :
+     """
+         Read versioning information from pyproject.toml
+@@ -28,7 +31,12 @@ def readVersioningInfo(path : str) -> dict :
+             "description" : "unknown"
+         }
+ 
+-        
++
++CDN = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0"
++
++@apidoc_module.apidoc.add_app_template_global
++def swagger_static(filename):
++    return f"{CDN}/{filename}"
+ 
+ 
+ def main():
+@@ -61,4 +69,4 @@ def main():
+ 
+ 
+ if __name__ == "__main__": 
+-    main()
+\ No newline at end of file
++    main()
+diff --git a/backend/src/server.py b/backend/src/server.py
+index 68d6784..e86625e 100644
+--- a/backend/src/server.py
++++ b/backend/src/server.py
+@@ -11,6 +11,11 @@ class Server:
+         self.__port = port
+         self.__name = name
+         self.__app = Flask(self.__name)
++
++        self.__app.config['SWAGGER_UI_BUNDLE_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-bundle.min.js'
++        self.__app.config['SWAGGER_UI_STANDALONE_PRESET_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-standalone-preset.min.js'
++        self.__app.config['SWAGGER_UI_CSS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui.min.css'
++
+         self.__api = Api(self.__app,prefix = route_prefix)
+         init_db_service(version=version)
+         ns_sessions = create_session_namespace(character_model_path=Path(__file__).parent/"models/character_model.json")

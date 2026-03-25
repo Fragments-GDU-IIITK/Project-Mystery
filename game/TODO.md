@@ -3,14 +3,15 @@
 - [x] Scenes
 	- [x] Scene Switching
 - [x] Timing
-- [ ] Networking ![Link](https://github.com/yhirose/cpp-httplib/)
-	- [ ] Find a lib
-	- [ ] Make it easy to use
+- [x] Networking ![Link](https://github.com/yhirose/cpp-httplib/)
+	- [x] Find a lib
+	- [x] Make it easy to use
+    - [x] Chat bot
+    - [ ] Make it async
 - [ ] Render the Game to a seperate render target texture
 	- [ ] Render the render target to
 		- [ ] Imgui Window if in debug mode
 		- [ ] Main Window when release mode
-- [ ] Chat bot
 - [ ] Save file
 
 # Game

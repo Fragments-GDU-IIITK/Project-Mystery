@@ -24,20 +24,6 @@ public:
     }
 };
 
-class InGame : public Engine::Scene {
-private:
-    void drawChatBot(Npc& npc);
-
-public:
-	virtual void UpdateAndRender() override;
-	virtual void GUI() override;
-
-	virtual const char* GetName() const override 
-    {
-        return "In Game";
-    }
-};
-
 class OptionsMenu : public Engine::Scene {
 public:
 	virtual void UpdateAndRender() override;

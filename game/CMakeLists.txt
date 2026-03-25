@@ -7,6 +7,12 @@ project(MysteryGame
 
 set(CMAKE_CXX_STANDARD 26)
 
+message(STATUS "--- Compiler Information ---")
+message(STATUS "C Compiler:   ${CMAKE_C_COMPILER}")
+message(STATUS "C++ Compiler: ${CMAKE_CXX_COMPILER}")
+message(STATUS "Compiler ID:  ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "Version:      ${CMAKE_CXX_COMPILER_VERSION}")
+
 ## Submodules
 
 ### Json
@@ -44,10 +50,11 @@ target_include_directories(rlImgui PUBLIC ${IMGUI_SOURCE_DIR})
 
 add_library(engine STATIC
 	engine/asset.hpp
+	engine/asset_font.cpp
+	engine/asset_font.hpp
 	engine/asset_texture.cpp
 	engine/asset_texture.hpp
 	engine/asset_manager.hpp
-	engine/asset_manager.cpp
 	engine/engine.cpp
 	engine/engine.hpp
 	engine/error.cpp
@@ -73,6 +80,7 @@ add_executable(game
 	game/init.cpp
 	game/scenes.hpp
 	game/scene_mainmenu.cpp
+	game/scene_ingame.hpp
 	game/scene_ingame.cpp
 	game/scene_optionsmenu.cpp
 	game/global.hpp
@@ -88,5 +96,7 @@ target_include_directories(game PUBLIC ${RLIMGUI_SOURCE_DIR})
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_definitions(engine PRIVATE DEBUG)
 	target_compile_definitions(game PRIVATE DEBUG)
-endif()
 
+    target_compile_options(engine PRIVATE -fproc-stat-report)
+    target_compile_options(game PRIVATE -fproc-stat-report)
+endif()

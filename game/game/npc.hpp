@@ -1,8 +1,9 @@
 #pragma once
 
-#include "httplib.h"
-
+#include <deque>
+#include <mutex>
 #include <string>
+#include <thread>
 #include <vector>
 
 namespace Game {
@@ -27,12 +28,13 @@ public:
     std::vector<ChatEntry> Chat;
     char InputField[MAX_INPUT_FIELD_SIZE];
 
-    Npc(std::string name)
-        : Name{std::move(name)}
-        , InputField{0}
-        , m_Client{"https://mlvoca.com/api"}
-        , m_Result{}
-    {}
+    explicit Npc(std::string name);
+    ~Npc();
+
+    Npc(const Npc&) = delete;
+    Npc& operator=(const Npc&) = delete;
+    Npc(Npc&&) = delete;
+    Npc& operator=(Npc&&) = delete;
 
     void GetResponse();
 
@@ -40,9 +42,12 @@ public:
 
     NetworkState GetNetworkState() const { return m_NetworkState; }
 
-private:
-    httplib::Client m_Client;
-    httplib::stream::Result m_Result;
+public:
+    std::mutex m_StreamMutex;
+    std::deque<std::string> m_PendingChunks;
+    bool m_WorkerFinished{false};
+    bool m_StreamOpenedOk{false};
+    std::thread m_WorkerThread;
 
     NetworkState m_NetworkState{NetworkState::kIdle};
 };
