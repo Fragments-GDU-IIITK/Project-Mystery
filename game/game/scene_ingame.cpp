@@ -13,28 +13,45 @@
 #include "global.hpp"
 
 #include <cstring>
+#include <algorithm>
 
 #define ABS(x) ((x) < 0 ? -(x) : (x))
 
+// AI
 namespace {
 
 // Raylib default from rtext.c; DrawTextEx advances by fontSize + this per '\n'.
 constexpr float kTextLineGap = 2.f;
 
 // Word-wrap and explicit newlines; layout is recomputed every frame (font size / box changes apply immediately).
+// If outCaretEnd is non-null, set to the top-left where a caret after the last character should sit
+// (start of a new line after a trailing '\n', or after the last glyph on the last visual line).
 void DrawTextWrappedInRect(Font font, const char* text, Rectangle box, float fontSize,
-                           float letterSpacing, Color tint, float pad)
+                           float letterSpacing, Color tint, float pad, Vector2* outCaretEnd)
 {
     const float maxW = (box.width > 2.f * pad) ? (box.width - 2.f * pad) : 8.f;
     const float x0 = box.x + pad;
     float y = box.y + pad;
     const float lineStep = fontSize + kTextLineGap;
 
+    Vector2 dummyCaret{};
+    Vector2& caret = outCaretEnd ? *outCaretEnd : dummyCaret;
+    caret.x = x0;
+    caret.y = y;
+
     if (!text || !text[0])
         return;
 
     char lineBuf[MAX_TEXTAREA_BUFFER_SIZE];
     const char* s = text;
+
+    auto setCaretForLine = [&](float lineY, const char* lineStr) {
+        caret.y = lineY;
+        if (lineStr && lineStr[0] != '\0')
+            caret.x = x0 + MeasureTextEx(font, lineStr, fontSize, letterSpacing).x;
+        else
+            caret.x = x0;
+    };
 
     while (*s)
     {
@@ -43,7 +60,10 @@ void DrawTextWrappedInRect(Font font, const char* text, Rectangle box, float fon
         const char* p = s;
 
         if (p == segEnd)
+        {
+            setCaretForLine(y, "");
             y += lineStep;
+        }
         else
         {
             while (p < segEnd)
@@ -128,6 +148,7 @@ void DrawTextWrappedInRect(Font font, const char* text, Rectangle box, float fon
                 if (lineBuf[0] != '\0')
                     DrawTextEx(font, lineBuf, Vector2{x0, y}, fontSize, letterSpacing, tint);
 
+                setCaretForLine(y, lineBuf);
                 y += lineStep;
                 p = nextP;
                 while (p < segEnd && (*p == ' ' || *p == '\t'))
@@ -145,8 +166,10 @@ namespace Game {
 
 void InGame::UpdateAndRender()
 {
-    Global::Get().GoodGuy.Update();
-    Global::Get().BadGuy.Update();
+    for (Npc& npc : Global::Get().NPCs)
+    {
+        npc.Update();
+    }
 
     ClearBackground(BLACK);
     DrawText("InGame", 0, 0, 20, RED);
@@ -215,8 +238,8 @@ void InGame::drawInputTextArea()
             if (IsKeyPressed(KEY_BACKSPACE) && m_InputArea.Text.len > 0)
                 m_InputArea.Text.len--;
 
-            if (IsKeyPressed(KEY_ENTER) && m_InputArea.Text.len + 1 < MAX_TEXTAREA_BUFFER_SIZE)
-                m_InputArea.Text.Buffer[m_InputArea.Text.len++] = '\n';
+            // if (IsKeyPressed(KEY_ENTER) && m_InputArea.Text.len + 1 < MAX_TEXTAREA_BUFFER_SIZE)
+            //     m_InputArea.Text.Buffer[m_InputArea.Text.len++] = '\n';
 
             char c = GetCharPressed();
             while (c) {
@@ -232,9 +255,24 @@ void InGame::drawInputTextArea()
     auto font = GET_FONT(m_InputArea.FontID);
 
     m_InputArea.Text.Buffer[m_InputArea.Text.len] = 0;
+
+    Vector2 caretEnd{};
     DrawTextWrappedInRect(font->GetFont(), m_InputArea.Text.Buffer, m_InputArea.BB,
                           m_InputArea.FontSize, m_InputArea.FontSpacing,
-                          m_InputArea.FontTint, 8.f);
+                          m_InputArea.FontTint, 8.f, &caretEnd);
+
+    if (m_ChatMode == ChatMode::kOpened)
+    {
+        const bool cursorOn = (static_cast<int>(GetTime() * 2.5f) % 2) == 0;
+        if (cursorOn)
+        {
+            // Rectangle caret so it can be swapped for DrawTexturePro with the same bounds later.
+            const float caretW = std::max(2.f, m_InputArea.FontSize * 0.15f);
+            const float caretH = m_InputArea.FontSize;
+            const Rectangle caretRect{caretEnd.x, caretEnd.y, caretW, caretH};
+            DrawRectangleRec(caretRect, WHITE);
+        }
+    }
 }
 
 void InGame::drawChatBot(Npc& npc)
@@ -276,8 +314,10 @@ void InGame::drawChatBot(Npc& npc)
 
 void InGame::GUI()
 {
-    drawChatBot(Global::Get().GoodGuy);
-    drawChatBot(Global::Get().BadGuy);
+    for (Npc& npc : Global::Get().NPCs)
+    {
+        drawChatBot(npc);
+    }
 
     if (ImGui::CollapsingHeader("Input Area Properties"))
     {
@@ -308,12 +348,17 @@ void InGame::GUI()
         ImGui::SliderFloat("Damp", &m_InputArea.MovementDamp, 0.001, 0.5);
         ImGui::SliderFloat("Epsilon", &m_InputArea.Epsilon, 0.001, 0.1);
 
-        const char* fonts[] = { "Font 1", "Font 2", "Font 3", "Font 4", "Font 5" };
+        const char* fonts[] = { 
+            "1942", "Special Elite", 
+            "Spelndid B", "SplendidN", 
+            "At Writer", "TrovicalCalmFreeItalic",
+            "TrovicalCalmFreeRegular" 
+        };
         static int font_index = 0;
 
         if (ImGui::Combo("Select Font", &font_index, fonts, IM_ARRAYSIZE(fonts)))
         {
-            int base = static_cast<int>(AssetID::kTypeWriterFont1);
+            int base = static_cast<int>(AssetID::kFont1942);
             int index = base + font_index;
 
             m_InputArea.FontID = static_cast<AssetID>(index);

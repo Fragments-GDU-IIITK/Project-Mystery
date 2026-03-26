@@ -4,11 +4,13 @@ namespace Game {
 
 enum class AssetID
 {
-    kTypeWriterFont1,
-    kTypeWriterFont2,
-    kTypeWriterFont3,
-    kTypeWriterFont4,
-    kTypeWriterFont5,
+    kFont1942,
+    kFontSpecialElite,
+    kFontSplendidB,
+    kFontSplendidN,
+    kFontatwriter,
+    kFontTrovicalCalmFreeItalic,
+    kFontTrovicalCalmFreeRegular
 };
 
 } // namespace Game

@@ -47,7 +47,7 @@ private:
             size_t len;
         } Text{0};
 
-        AssetID FontID{AssetID::kTypeWriterFont2};
+        AssetID FontID{AssetID::kFontSpecialElite};
         float FontSize{30};
         float FontSpacing{0.1};
         Color FontTint{WHITE};

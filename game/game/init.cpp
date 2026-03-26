@@ -57,11 +57,19 @@ Engine::error_t* loadResources()
         err = Engine::AssetManager::Get().LoadAsset<_type>(static_cast<int>(_id), _path);   \
         if (err) return err;
 
-        LOAD_ASSET(Engine::Font, AssetID::kTypeWriterFont1, "./res/1942.ttf");
-        LOAD_ASSET(Engine::Font, AssetID::kTypeWriterFont2, "./res/SpecialElite.ttf");
-        LOAD_ASSET(Engine::Font, AssetID::kTypeWriterFont3, "./res/SplendidB.ttf");
-        LOAD_ASSET(Engine::Font, AssetID::kTypeWriterFont4, "./res/SplendidN.ttf");
-        LOAD_ASSET(Engine::Font, AssetID::kTypeWriterFont5, "./res/atwriter.ttf");
+        #define LOAD_FONT(name) \
+            LOAD_ASSET(Engine::Font, AssetID::kFont##name, "./res/" #name ".ttf")
+
+            LOAD_FONT(1942);
+            LOAD_FONT(SpecialElite);
+            LOAD_FONT(SplendidB);
+            LOAD_FONT(SplendidN);
+            LOAD_FONT(atwriter);
+            LOAD_FONT(TrovicalCalmFreeItalic);
+            LOAD_FONT(TrovicalCalmFreeRegular);
+
+
+        #undef LOAD_FONT
 
     #undef LOAD_ASSET
 

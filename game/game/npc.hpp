@@ -29,7 +29,11 @@ public:
     std::vector<ChatEntry> Chat;
     char InputField[MAX_INPUT_FIELD_SIZE];
 
-    explicit Npc(std::string name);
+    Npc(std::string name);
+    Npc()
+        : Npc("Unknown")
+    {}
+
     ~Npc();
 
     Npc(const Npc&) = delete;
@@ -38,12 +42,6 @@ public:
     Npc& operator=(Npc&&) = delete;
 
     void GetResponse();
-    void GetResponse(const char* Buffer, size_t len)
-    {
-        memcpy(InputField, Buffer, len);
-        InputField[len] = 0;
-        GetResponse();
-    }
 
     void Update();
 
