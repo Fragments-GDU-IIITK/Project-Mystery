@@ -2,6 +2,8 @@ from flask import Flask
 from flask_restx import Resource, Api, Namespace
 from pathlib import Path
 
+from flask_cors import CORS
+
 from src.resources.chat import create_chat_namespace
 from src.resources.session import create_session_namespace
 from src.services.database_service import init_db_service
@@ -11,6 +13,8 @@ class Server:
         self.__port = port
         self.__name = name
         self.__app = Flask(self.__name)
+
+        CORS(self.__app)
 
         self.__app.config['SWAGGER_UI_BUNDLE_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-bundle.min.js'
         self.__app.config['SWAGGER_UI_STANDALONE_PRESET_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-standalone-preset.min.js'
