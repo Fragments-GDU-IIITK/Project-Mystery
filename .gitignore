@@ -1,7 +1,7 @@
 # Game specific
 
 build/
-perf.log
+game/perf.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
