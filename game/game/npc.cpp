@@ -102,7 +102,7 @@ void Npc::GetResponse()
     httplib::Headers headers = {};
     std::string body = TextFormat(
         "{                                      \
-            \"model\": \"tinyllama\",           \
+            \"prompt\": \"%s\",                 \
             \"prompt\": \"%s\"                  \
         }", InputField);
 

@@ -26,6 +26,7 @@ public:
     };
 
     std::string Name;
+    std::string NetID;
     std::vector<ChatEntry> Chat;
     char InputField[MAX_INPUT_FIELD_SIZE];
 
