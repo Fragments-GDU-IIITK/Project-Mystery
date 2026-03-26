@@ -16,8 +16,12 @@ public:
 	 */
 	virtual void UpdateAndRender() = 0;
 
+	virtual void GUI() = 0;
+
 	// For Debugging
 	virtual const char* GetName() const = 0;
+
+    virtual ~Scene() = default;
 };
 
 } // namespace Engine

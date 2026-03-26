@@ -10,3 +10,6 @@
 [submodule "cpp-httplib"]
 	path = game/cpp-httplib
 	url = https://github.com/yhirose/cpp-httplib.git
+[submodule "json"]
+	path = game/json
+	url = https://github.com/nlohmann/json.git

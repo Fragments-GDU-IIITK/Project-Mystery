@@ -1,5 +1,7 @@
 #pragma once
 
+#include "global.hpp"
+
 #include "engine/scene.hpp"
 
 namespace Game {
@@ -14,22 +16,23 @@ enum class Scenes {
 class MainMenu : public Engine::Scene {
 public:
 	virtual void UpdateAndRender() override;
+	virtual void GUI() override { }
 
-	virtual const char* GetName() const { return "Main Menu"; }
-};
-
-class InGame : public Engine::Scene {
-public:
-	virtual void UpdateAndRender() override;
-
-	virtual const char* GetName() const { return "In Game"; }
+	virtual const char* GetName() const override 
+    {
+        return "Main Menu";
+    }
 };
 
 class OptionsMenu : public Engine::Scene {
 public:
 	virtual void UpdateAndRender() override;
+	virtual void GUI() override { }
 
-	virtual const char* GetName() const { return "Options Menu"; }
+	virtual const char* GetName() const override
+    {
+        return "Options Menu";
+    }
 };
 
 } // namespace Game

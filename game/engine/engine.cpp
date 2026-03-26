@@ -12,10 +12,23 @@ error_t* Initialize()
 {
 	PERF_SCOPE();
 
-	InitWindow(800, 600, "Hello World");
+	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+
+	Context::Get().window_width = 1280;
+	Context::Get().window_height = 720;
+
+	InitWindow(Context::Get().window_width, 
+			   Context::Get().window_height, 
+			   "Hello World");
+
 	rlImGuiSetup(true);
 
+	Context::Get().render_target = LoadRenderTexture(Context::Get().window_width, 
+						  							 Context::Get().window_height);
+
 	Perf::Init();
+
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 	return nullptr;
 }

@@ -18,7 +18,6 @@ int main() {
 	}
 
 	err = Game::Initialize();
-
 	if (err) {
 		TraceLog(LOG_ERROR, "Failed To Initialize Game: %s", err->Error().data());
 		Game::Shutdown();
@@ -33,7 +32,6 @@ int main() {
 	TraceLog(LOG_INFO, "Closing Game Now...");
 
 	Game::Shutdown();
-
 	Engine::Shutdown();
 
 	TraceLog(LOG_INFO, "Bye");

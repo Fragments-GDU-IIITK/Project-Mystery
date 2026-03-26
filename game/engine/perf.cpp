@@ -25,14 +25,16 @@ static uint32_t CurrentThreadID() {
 }
 
 Perf::Perf()
-    : m_file(nullptr), m_firstEntry(true) {
+    : m_file(nullptr), m_firstEntry(true)
+{
     m_file = fopen(PERF_LOG_FILE, "w");
     assert(m_file && "Perf: failed to open log file");
 
     fprintf(m_file, "[\n");
 }
 
-Perf::~Perf() {
+Perf::~Perf()
+{
     if (m_file) {
         fprintf(m_file, "\n]\n");
         fclose(m_file);

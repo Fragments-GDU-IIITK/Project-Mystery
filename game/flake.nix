@@ -10,11 +10,13 @@
 			system = "x86_64-linux";
 			pkgs = import nixpkgs { inherit system; };
 			unstable = import nixpkgs-unstable { inherit system; };
+            llvmPkgs = unstable.llvmPackages_latest;
 		in {
-			devShells.${system}.default = pkgs.mkShell {
+			devShells.${system}.default = unstable.mkShell.override { stdenv = llvmPkgs.stdenv; } {
 			packages = with pkgs; [
 				unstable.cmake
-				unstable.gcc
+                # unstable.gcc
+                llvmPkgs.clang-tools
 				vim
 				gnumake
 				gdb
@@ -22,6 +24,7 @@
 				pkg-config
 				ungoogled-chromium
 				tmux
+                openssl
 
 				xorg.libX11
 				xorg.libX11.dev
@@ -34,7 +37,7 @@
 
 			shellHook = ''
 				echo "--- C++ Dev Environment Loaded ---"
-				echo "GCC Version:   $(g++ --version | head -n 1)"
+				echo "Clang Version:   $(clang++ --version | head -n 1)"
 				echo "CMake Version: $(cmake --version | head -n 1)"
 				echo "Chromium Version: $(chromium --version | head -n 1)"
 

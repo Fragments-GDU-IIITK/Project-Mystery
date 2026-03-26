@@ -10,6 +10,24 @@ namespace Engine {
 
 // TODO(gowrish): Add logs and tracing to all of these
 
+void SceneManager::GUI()
+{
+	PERF_SCOPE();
+
+	ImGui::Begin("Scene Selector");
+	for (int i = 0; i < m_Scenes.size(); i++) {
+		if (ImGui::CollapsingHeader(TextFormat("%s", m_Scenes[i]->GetName()))) {
+			if (ImGui::Button(TextFormat("Switch to %s", m_Scenes[i]->GetName()))) {
+				SceneManager::Get().SetNextScene(i);
+			}
+                        ImGui::Indent();
+			m_Scenes[i]->GUI();
+                        ImGui::Unindent();
+		}
+	}
+	ImGui::End();
+}
+
 void SceneManager::UpdateAndRender()
 {
 	PERF_SCOPE();
@@ -20,17 +38,6 @@ void SceneManager::UpdateAndRender()
 		m_CurrentScene = m_NextScene;
 		m_NextScene = INVALID_SCENE_INDEX;
 	}
-
-// TODO(gowrish): Change this #if to #ifdef DEVMODE or something like that
-#if 1
-	ImGui::Begin("Scene Selector");
-	for (int i = 0; i < m_Scenes.size(); i++) {
-		if (ImGui::Button(TextFormat("Switch to Scene::%s", m_Scenes[i]->GetName()))) {
-			SceneManager::Get().SetNextScene(i);
-		}
-	}
-	ImGui::End();
-#endif
 
 	// m_CurrentScene is guarenteed to be in range cus SetNextScene would check it
 	m_Scenes[m_CurrentScene]->UpdateAndRender();

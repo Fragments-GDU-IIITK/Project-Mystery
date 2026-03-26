@@ -1,12 +1,14 @@
+#pragma once
+
 #include "asset.hpp"
 
 #include "raylib.h"
 
 namespace Engine {
 
-class Texture : Asset {
+class Texture : public Asset {
 public:
-	virtual void Load(const char* file_path) override;
+	virtual error_t* Load(const char* file_path) override;
 	virtual void Unload() override;
 
 	const Texture2D& GetTexture() const { return m_Texture; }
