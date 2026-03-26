@@ -12,7 +12,134 @@
 
 #include "global.hpp"
 
+#include <cstring>
+
 #define ABS(x) ((x) < 0 ? -(x) : (x))
+
+namespace {
+
+// Raylib default from rtext.c; DrawTextEx advances by fontSize + this per '\n'.
+constexpr float kTextLineGap = 2.f;
+
+// Word-wrap and explicit newlines; layout is recomputed every frame (font size / box changes apply immediately).
+void DrawTextWrappedInRect(Font font, const char* text, Rectangle box, float fontSize,
+                           float letterSpacing, Color tint, float pad)
+{
+    const float maxW = (box.width > 2.f * pad) ? (box.width - 2.f * pad) : 8.f;
+    const float x0 = box.x + pad;
+    float y = box.y + pad;
+    const float lineStep = fontSize + kTextLineGap;
+
+    if (!text || !text[0])
+        return;
+
+    char lineBuf[MAX_TEXTAREA_BUFFER_SIZE];
+    const char* s = text;
+
+    while (*s)
+    {
+        const char* nl = std::strchr(s, '\n');
+        const char* segEnd = nl ? nl : s + std::strlen(s);
+        const char* p = s;
+
+        if (p == segEnd)
+            y += lineStep;
+        else
+        {
+            while (p < segEnd)
+            {
+                const char* q = p;
+                const char* lastGood = p;
+
+                while (q < segEnd)
+                {
+                    int bc = 0;
+                    GetCodepointNext(q, &bc);
+                    const int n = static_cast<int>(q - p + bc);
+                    if (n >= MAX_TEXTAREA_BUFFER_SIZE)
+                        break;
+                    std::memcpy(lineBuf, p, static_cast<size_t>(n));
+                    lineBuf[n] = '\0';
+
+                    if (MeasureTextEx(font, lineBuf, fontSize, letterSpacing).x > maxW)
+                        break;
+
+                    lastGood = q + bc;
+                    q += bc;
+                }
+
+                const char* fitEnd = lastGood;
+
+                const char* drawEnd = fitEnd;
+                const char* nextP = fitEnd;
+
+                if (fitEnd == p)
+                {
+                    int bc = 0;
+                    GetCodepointNext(p, &bc);
+                    drawEnd = p + bc;
+                    nextP = drawEnd;
+                    std::memcpy(lineBuf, p, static_cast<size_t>(bc));
+                    lineBuf[bc] = '\0';
+                }
+                else if (fitEnd < segEnd)
+                {
+                    const char* scan = fitEnd;
+                    bool brokeAtSpace = false;
+                    while (scan > p)
+                    {
+                        int prevSz = 0;
+                        const int cp = GetCodepointPrevious(scan, &prevSz);
+                        scan -= prevSz;
+                        if (cp == ' ' || cp == '\t')
+                        {
+                            drawEnd = scan;
+                            nextP = scan + prevSz;
+                            brokeAtSpace = true;
+                            break;
+                        }
+                    }
+
+                    int n = static_cast<int>(drawEnd - p);
+                    if (n <= 0)
+                    {
+                        int bc = 0;
+                        GetCodepointNext(p, &bc);
+                        drawEnd = p + bc;
+                        nextP = drawEnd;
+                        n = bc;
+                        brokeAtSpace = false;
+                    }
+                    std::memcpy(lineBuf, p, static_cast<size_t>(n));
+                    lineBuf[n] = '\0';
+                    if (!brokeAtSpace)
+                    {
+                        while (n > 0 && (lineBuf[n - 1] == ' ' || lineBuf[n - 1] == '\t'))
+                            lineBuf[--n] = '\0';
+                    }
+                }
+                else
+                {
+                    const int n = static_cast<int>(drawEnd - p);
+                    std::memcpy(lineBuf, p, static_cast<size_t>(n));
+                    lineBuf[n] = '\0';
+                }
+
+                if (lineBuf[0] != '\0')
+                    DrawTextEx(font, lineBuf, Vector2{x0, y}, fontSize, letterSpacing, tint);
+
+                y += lineStep;
+                p = nextP;
+                while (p < segEnd && (*p == ' ' || *p == '\t'))
+                    p++;
+            }
+        }
+
+        s = nl ? nl + 1 : segEnd;
+    }
+}
+
+} // namespace
 
 namespace Game {
 
@@ -26,8 +153,6 @@ void InGame::UpdateAndRender()
 
     drawInputTextArea();
 }
-
-#define INPUT_AREA_MOUSE_TRIGGER_ZONE_START (0.9)
 
 void InGame::drawInputTextArea()
 {
@@ -87,8 +212,11 @@ void InGame::drawInputTextArea()
                 break;
             }
 
-            if (IsKeyPressed(KEY_BACKSPACE))
+            if (IsKeyPressed(KEY_BACKSPACE) && m_InputArea.Text.len > 0)
                 m_InputArea.Text.len--;
+
+            if (IsKeyPressed(KEY_ENTER) && m_InputArea.Text.len + 1 < MAX_TEXTAREA_BUFFER_SIZE)
+                m_InputArea.Text.Buffer[m_InputArea.Text.len++] = '\n';
 
             char c = GetCharPressed();
             while (c) {
@@ -104,10 +232,9 @@ void InGame::drawInputTextArea()
     auto font = GET_FONT(m_InputArea.FontID);
 
     m_InputArea.Text.Buffer[m_InputArea.Text.len] = 0;
-    DrawTextEx(font->GetFont(), m_InputArea.Text.Buffer, 
-               Vector2{m_InputArea.BB.x, m_InputArea.BB.y}, 
-               m_InputArea.FontSize, m_InputArea.FontSpacing, 
-               m_InputArea.FontTint);
+    DrawTextWrappedInRect(font->GetFont(), m_InputArea.Text.Buffer, m_InputArea.BB,
+                          m_InputArea.FontSize, m_InputArea.FontSpacing,
+                          m_InputArea.FontTint, 8.f);
 }
 
 void InGame::drawChatBot(Npc& npc)

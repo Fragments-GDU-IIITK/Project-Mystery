@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 #include <deque>
 #include <mutex>
 #include <string>
@@ -37,6 +38,12 @@ public:
     Npc& operator=(Npc&&) = delete;
 
     void GetResponse();
+    void GetResponse(const char* Buffer, size_t len)
+    {
+        memcpy(InputField, Buffer, len);
+        InputField[len] = 0;
+        GetResponse();
+    }
 
     void Update();
 

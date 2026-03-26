@@ -47,7 +47,7 @@ private:
             size_t len;
         } Text{0};
 
-        AssetID FontID{AssetID::kTypeWriterFont1};
+        AssetID FontID{AssetID::kTypeWriterFont2};
         float FontSize{30};
         float FontSpacing{0.1};
         Color FontTint{WHITE};
