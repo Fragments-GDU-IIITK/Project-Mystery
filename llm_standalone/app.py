@@ -1,6 +1,7 @@
 from pathlib import Path
 from threading import Thread
 import time
+import os
 
 import chromadb
 import torch
@@ -114,11 +115,12 @@ class InterrogationLLM:
         self.require_lora = require_lora
         self.adapters_loaded = {}
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.tokenizer = AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM-135M-Instruct")
+        self.base_model = os.getenv("BASE_MODEL", "HuggingFaceTB/SmolLM-135M-Instruct")
+        self.tokenizer = AutoTokenizer.from_pretrained(self.base_model)
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
         self.model = AutoModelForCausalLM.from_pretrained(
-            "HuggingFaceTB/SmolLM-135M-Instruct",
+            self.base_model,
             torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
         ).to(self.device)
         self.model.eval()
@@ -126,12 +128,14 @@ class InterrogationLLM:
 
     def load_adapters(self):
         adapter_specs = {
-            "intern_leo": Path(__file__).resolve().parent / "adapters" / "intern_leo",
-            "dr_tara": Path(__file__).resolve().parent / "adapters" / "dr_tara",
+            "intern_leo": Path(os.getenv("LORA_ADAPTER_INTERN_LEO", str(Path(__file__).resolve().parent / "adapters" / "intern_leo"))),
+            "dr_tara": Path(os.getenv("LORA_ADAPTER_DR_TARA", str(Path(__file__).resolve().parent / "adapters" / "dr_tara"))),
         }
         for character_id, adapter_path in adapter_specs.items():
             try:
-                if not adapter_path.exists():
+                adapter_config = adapter_path / "adapter_config.json"
+                adapter_weights = adapter_path / "adapter_model.safetensors"
+                if not adapter_path.exists() or not adapter_config.exists() or not adapter_weights.exists():
                     self.adapters_loaded[character_id] = False
                     continue
                 if not isinstance(self.model, PeftModel):
@@ -194,10 +198,23 @@ class InterrogationLLM:
 
 
 db = StandaloneDB()
-llm_engine = InterrogationLLM(db, num_relevant_docs=5, require_lora=True)
+require_lora = os.getenv("REQUIRE_LORA", "true").lower() == "true"
+llm_engine = InterrogationLLM(db, num_relevant_docs=5, require_lora=require_lora)
 
 app = Flask(__name__)
 CORS(app)
+
+
+@app.get("/health")
+def health():
+    return jsonify(
+        {
+            "status": "ok",
+            "require_lora": require_lora,
+            "adapters_loaded": llm_engine.adapters_loaded,
+            "base_model": llm_engine.base_model,
+        }
+    )
 
 
 @app.post("/interrogate")
@@ -207,6 +224,8 @@ def interrogate():
     message = payload.get("message")
     if not character_id or not message:
         return jsonify({"error": "character_id and message are required"}), 400
+    if character_id not in ("intern_leo", "dr_tara"):
+        return jsonify({"error": "character_id must be intern_leo or dr_tara"}), 400
 
     def event_stream():
         full_response = []
@@ -230,6 +249,8 @@ def chat():
     prompt = payload.get("prompt")
     if not character_id or not prompt:
         return jsonify({"status": 400, "description": "Missing prompt or character_id"}), 400
+    if character_id not in ("intern_leo", "dr_tara"):
+        return jsonify({"status": 400, "description": "Invalid character_id"}), 400
 
     def on_complete(player_text, llm_text, cid):
         db.add_conv_memory(player_text, llm_text, cid)

@@ -1,0 +1,4 @@
+chroma_data/
+session_data/
+adapters/*/checkpoints/
+__pycache__/
