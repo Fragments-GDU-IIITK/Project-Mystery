@@ -1,5 +1,4 @@
 from pathlib import Path
-from threading import Thread
 import time
 import os
 
@@ -8,7 +7,8 @@ import torch
 from peft import PeftModel
 from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
-from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import json
 
 
 FACTS = [
@@ -22,9 +22,84 @@ FACTS = [
     "The Kottayam Star chip was discovered missing at 11:55 PM.",
 ]
 
+CASEFILE_FOR_DETECTIVE = {
+    "case_title": "The Missing Kottayam Star",
+    "case_id": "case_kottayam_star",
+    "address": "Detective",
+    "opening": (
+        "You have been called to the university after midnight. The Kottayam Star, a prototype chip "
+        "secured in the server room, has vanished. Two people are in scope: Intern Leo, who had "
+        "legitimate access for backups, and Dr. Tara, a senior researcher whose funding was cut "
+        "hours earlier. The evidence below is what investigators have collected so far. Your job is "
+        "to question each suspect and, when you are ready, make a formal accusation."
+    ),
+    "facts": FACTS,
+    "suspects": [
+        {
+            "id": "intern_leo",
+            "name": "Leo",
+            "role": "Student intern (server backups)",
+            "demeanor_hint": "Nervous, scared of blame; may minimize his own mistakes.",
+        },
+        {
+            "id": "dr_tara",
+            "name": "Dr. Tara",
+            "role": "Senior researcher",
+            "demeanor_hint": "Stern, confident; may challenge your reasoning.",
+        },
+    ],
+    "instruction": (
+        "Question either suspect about any detail below. Compare their answers. When you can name "
+        "the thief with supporting reasoning, use the accusation step."
+    ),
+}
+
 PERSONAS = {
-    "intern_leo": "You are Leo, an anxious intern. You left the server room door propped open at 11:40 PM to get coffee, covering it up out of fear. If the user explicitly mentions BOTH the 'door sensor logs' and the '11:55 PM missing chip', you must break down, apologize profusely, and confess that you left the door open for coffee but insist you did not steal the chip.",
-    "dr_tara": "You are Dr. Tara, an arrogant researcher. You stole the chip at 11:45 PM because your funding was revoked. If the user explicitly mentions BOTH your 'revoked funding' and the 'faculty lounge motion sensors', you must drop the act, arrogantly confess to taking the chip, and state that you deserve it more than the university.",
+    "intern_leo": "You are Leo, a nervous university intern. You are anxious, scared, and defensive. You stutter slightly under pressure and fear losing your internship.",
+    "dr_tara": "You are Dr. Tara, a stern and confident senior researcher. You are precise, composed, and intellectually intimidating. You speak with controlled confidence.",
+}
+
+STORY_CONTEXT = """
+Case file: The Missing Kottayam Star
+- The Kottayam Star is a prototype artifact-chip stored in the university secure server room.
+- Timeline:
+  - 11:30 PM: chip confirmed present.
+  - 11:30 PM: Leo's badge logs entry for overnight backups.
+  - 11:40 PM to 11:55 PM: door sensor reports the server room door was held open.
+  - 11:55 PM: chip discovered missing.
+- Dr. Tara's grant funding was revoked at 5:00 PM.
+- Dr. Tara claimed she was in the faculty lounge 11:00 PM to midnight.
+- Motion sensors show zero faculty lounge movement from 10:45 PM to 6:00 AM.
+- Ground truth:
+  - Leo left the server room door open while grabbing coffee.
+  - Dr. Tara used the opportunity and stole the Kottayam Star.
+""".strip()
+
+CHARACTER_BASELINES = {
+    "intern_leo": """
+Character baseline: Leo
+- Personality: nervous, scared, apologetic, defensive under pressure.
+- What Leo knows:
+  - He entered at 11:30 PM for backups.
+  - He left for coffee and failed to secure the door.
+  - He did not personally steal the chip.
+- Behavior rules:
+  - At first, avoid full admission and minimize fault.
+  - If confronted with both "door sensor logs" and "11:55 PM missing chip", admit leaving the door open, apologize, and insist he did not steal the chip.
+  - Use short, human-like answers in first person.
+""".strip(),
+    "dr_tara": """
+Character baseline: Dr. Tara
+- Personality: stern, confident, controlled, intellectually condescending.
+- What Dr. Tara knows:
+  - Her funding was revoked at 5:00 PM.
+  - She lied about being in the faculty lounge.
+  - She stole the Kottayam Star around 11:45 PM.
+- Behavior rules:
+  - Initially deny direct guilt and challenge the investigator's assumptions.
+  - If confronted with both "revoked funding" and "faculty lounge motion sensors", confess calmly and justify the theft as deserved.
+  - Keep answers concise, in first person, and in-character.
+""".strip(),
 }
 
 
@@ -39,8 +114,10 @@ class StandaloneDB:
         self._initialize()
 
     def _initialize(self):
-        metadata = self.client.get_or_create_collection(name="Database_Metadata")
-        metadata.metadata = {"session_name": "standalone", "session_id": "standalone"}
+        self.client.get_or_create_collection(
+            name="Database_Metadata",
+            metadata={"session_name": "standalone", "session_id": "standalone"},
+        )
 
         for character_id in ("intern_leo", "dr_tara"):
             self.client.get_or_create_collection(name=character_id + self.conversational_mem_suffix)
@@ -81,18 +158,22 @@ def compose_prompt(db: StandaloneDB, user_prompt: str, character_id: str, num_re
     conv_mem_docs = db.query_conv_memory(user_prompt, character_id, num_relevant_documents)
     world_knowledge_docs = db.query_world_knowledge(user_prompt, character_id, num_relevant_documents)
 
-    prompt_context = """
-### INSTRUCTIONS
-- We are playing a game
-- You are given the knowledge of a character
-- You are also given the conversation history of the player and the character
-- You are to assume the personality and knowledge of the character
-- You have to reply to the players questions
+    baseline = CHARACTER_BASELINES.get(character_id, "")
+    prompt_context = f"""
+### STORY CONTEXT
+{STORY_CONTEXT}
 
-### OUTPUT RULES
-- Output ONLY your reply as the character
-- Don't output your thinking process
-- Maintain the reply within 2 paragraphs
+### CHARACTER BASELINE
+{baseline}
+
+### RULES
+- Stay strictly inside this story world.
+- Never output meta-instructions, rubric text, or role labels.
+- Never mention being an AI model.
+- Output only what the character says to the investigator.
+- Do not ask the investigator questions.
+- Do not invent new evidence, locations, or people not present in the case file.
+- Keep response to 3-6 sentences.
     """.strip()
 
     conv_mem_str = "\n".join(conv_mem_docs)
@@ -121,7 +202,8 @@ class InterrogationLLM:
             self.tokenizer.pad_token = self.tokenizer.eos_token
         self.model = AutoModelForCausalLM.from_pretrained(
             self.base_model,
-            torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
+            dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
+            low_cpu_mem_usage=True,
         ).to(self.device)
         self.model.eval()
         self.load_adapters()
@@ -162,7 +244,12 @@ class InterrogationLLM:
     def generate_stream(self, prompt, character_id):
         persona = PERSONAS.get(character_id, "")
         super_prompt = compose_prompt(self.db, prompt, character_id, self.num_relevant_docs)
-        final_prompt = persona + "\n\n" + super_prompt
+        final_prompt = (
+            persona
+            + "\n\n"
+            + super_prompt
+            + f"\n\n### PLAYER QUESTION\n{prompt}\n\n### CHARACTER REPLY\n"
+        )
         try:
             if isinstance(self.model, PeftModel) and self.adapters_loaded.get(character_id):
                 self.model.set_adapter(character_id)
@@ -170,22 +257,80 @@ class InterrogationLLM:
             pass
         inputs = self.tokenizer(final_prompt, return_tensors="pt", padding=True)
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
-        streamer = TextIteratorStreamer(self.tokenizer, skip_prompt=True, skip_special_tokens=True)
+        input_len = inputs["input_ids"].shape[1]
         kwargs = {
             **inputs,
-            "max_new_tokens": 160,
-            "temperature": 0.7,
-            "top_p": 0.9,
-            "do_sample": True,
-            "repetition_penalty": 1.2,
+            "max_new_tokens": 120,
+            "temperature": 0.0,
+            "do_sample": False,
+            "repetition_penalty": 1.25,
+            "no_repeat_ngram_size": 3,
             "eos_token_id": self.tokenizer.eos_token_id,
             "pad_token_id": self.tokenizer.pad_token_id,
-            "streamer": streamer,
         }
-        thread = Thread(target=self.model.generate, kwargs=kwargs)
-        thread.start()
-        for token in streamer:
-            yield token
+        output = self.model.generate(**kwargs)
+        generated = output[0][input_len:]
+        reply = self.tokenizer.decode(generated, skip_special_tokens=True)
+        reply = self._clean_reply(reply)
+        for token in reply.split(" "):
+            if token:
+                yield token + " "
+
+    def generate_from_super_prompt(self, super_prompt, character_id):
+        persona = PERSONAS.get(character_id, "")
+        final_prompt = (
+            persona
+            + "\n\n"
+            + super_prompt
+            + "\n\nOutput ONLY the character reply text. No labels. No meta commentary."
+        )
+        try:
+            if isinstance(self.model, PeftModel) and self.adapters_loaded.get(character_id):
+                self.model.set_adapter(character_id)
+        except Exception:
+            pass
+        inputs = self.tokenizer(final_prompt, return_tensors="pt", padding=True)
+        inputs = {k: v.to(self.device) for k, v in inputs.items()}
+        input_len = inputs["input_ids"].shape[1]
+        output = self.model.generate(
+            **inputs,
+            max_new_tokens=120,
+            temperature=0.0,
+            do_sample=False,
+            repetition_penalty=1.25,
+            no_repeat_ngram_size=3,
+            eos_token_id=self.tokenizer.eos_token_id,
+            pad_token_id=self.tokenizer.pad_token_id,
+        )
+        generated = output[0][input_len:]
+        reply = self.tokenizer.decode(generated, skip_special_tokens=True)
+        return self._clean_reply(reply)
+
+    def _clean_reply(self, text: str) -> str:
+        reply = text.strip()
+        if reply.lower().startswith("output only"):
+            reply = ""
+        for marker in [
+            "Player replies:",
+            "Player:",
+            "Detective:",
+            "Character:",
+            "###",
+        ]:
+            if marker in reply:
+                reply = reply.split(marker, 1)[0].strip()
+        if not reply:
+            return "I will answer directly: I am staying with my statement."
+        return reply
+
+
+def infer_character_id_from_prompt(prompt: str) -> str:
+    p = (prompt or "").lower()
+    if "dr. tara" in p or "dr tara" in p or "tara" in p:
+        return "dr_tara"
+    if "leo" in p or "intern" in p:
+        return "intern_leo"
+    return "dr_tara"
 
     def generate_bytes(self, prompt, character_id, on_complete=None):
         full_response = []
@@ -242,6 +387,24 @@ def interrogate():
     return Response(event_stream(), mimetype="text/event-stream")
 
 
+@app.get("/casefile")
+def casefile():
+    return jsonify(CASEFILE_FOR_DETECTIVE)
+
+
+@app.get("/briefing")
+def briefing():
+    return (
+        jsonify(
+            {
+                "error": "Deprecated. Narrator case data is not generated by the language model. "
+                "Use GET /casefile for the detective briefing (static facts + story setup)."
+            }
+        ),
+        410,
+    )
+
+
 @app.post("/chat/")
 def chat():
     payload = request.get_json(silent=True) or {}
@@ -257,6 +420,26 @@ def chat():
 
     generator = llm_engine.generate_bytes(prompt, character_id, on_complete=on_complete)
     return Response(generator, content_type="text/plain")
+
+
+@app.post("/api/generate")
+def mlvoca_compatible_generate():
+    payload = request.get_json(silent=True) or {}
+    super_prompt = payload.get("prompt")
+    if not super_prompt:
+        return jsonify({"error": "Missing prompt"}), 400
+
+    character_id = infer_character_id_from_prompt(super_prompt)
+
+    def generate_lines():
+        reply = llm_engine.generate_from_super_prompt(super_prompt, character_id)
+        for token in reply.split(" "):
+            if token:
+                line = json.dumps({"response": token + " ", "done": False}, ensure_ascii=False)
+                yield line + "\n"
+        yield json.dumps({"response": "", "done": True}, ensure_ascii=False) + "\n"
+
+    return Response(generate_lines(), content_type="application/json")
 
 
 @app.post("/accuse")
@@ -293,5 +476,6 @@ def accuse():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    debug_mode = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+    app.run(host="0.0.0.0", port=5000, debug=debug_mode, use_reloader=False)
 
