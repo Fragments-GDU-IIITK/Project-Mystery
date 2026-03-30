@@ -1,14 +1,13 @@
 from pathlib import Path
-import time
 import os
 
-import chromadb
 import torch
 from peft import PeftModel
 from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import json
+from backend_db_bridge import BackendDBBridge
 
 
 FACTS = [
@@ -103,58 +102,7 @@ Character baseline: Dr. Tara
 }
 
 
-class StandaloneDB:
-    def __init__(self):
-        base_path = Path(__file__).resolve().parent
-        self.data_path = base_path / "session_data" / "standalone"
-        self.data_path.mkdir(parents=True, exist_ok=True)
-        self.client = chromadb.PersistentClient(path=str(self.data_path))
-        self.conversational_mem_suffix = "conversational_mem"
-        self.world_knowledge_suffix = "world_knowledge"
-        self._initialize()
-
-    def _initialize(self):
-        self.client.get_or_create_collection(
-            name="Database_Metadata",
-            metadata={"session_name": "standalone", "session_id": "standalone"},
-        )
-
-        for character_id in ("intern_leo", "dr_tara"):
-            self.client.get_or_create_collection(name=character_id + self.conversational_mem_suffix)
-            wk = self.client.get_or_create_collection(name=character_id + self.world_knowledge_suffix)
-            if wk.count() == 0:
-                ids = [f"{character_id}_{i}" for i in range(len(FACTS))]
-                wk.add(ids=ids, documents=FACTS)
-
-        case = self.client.get_or_create_collection(name="case_kottayam_star")
-        if case.count() == 0:
-            ids = [f"fact_{idx}" for idx in range(len(FACTS))]
-            case.add(ids=ids, documents=FACTS)
-
-    def query_conv_memory(self, query: str, character_id: str, n_results: int):
-        collection = self.client.get_or_create_collection(name=character_id + self.conversational_mem_suffix)
-        if collection.count() == 0:
-            return []
-        results = collection.query(query_texts=[query], n_results=n_results)
-        documents = results.get("documents") or [[]]
-        return documents[0]
-
-    def query_world_knowledge(self, query: str, character_id: str, n_results: int):
-        collection = self.client.get_or_create_collection(name=character_id + self.world_knowledge_suffix)
-        if collection.count() == 0:
-            return []
-        results = collection.query(query_texts=[query], n_results=n_results)
-        documents = results.get("documents") or [[]]
-        return documents[0]
-
-    def add_conv_memory(self, player_text: str, llm_text: str, character_id: str):
-        collection = self.client.get_or_create_collection(name=character_id + self.conversational_mem_suffix)
-        doc = f"player: {player_text}\ncharacter: {llm_text}"
-        doc_id = f"{character_id}_{int(time.time() * 1000)}"
-        collection.add(ids=[doc_id], documents=[doc])
-
-
-def compose_prompt(db: StandaloneDB, user_prompt: str, character_id: str, num_relevant_documents: int):
+def compose_prompt(db: BackendDBBridge, user_prompt: str, character_id: str, num_relevant_documents: int):
     conv_mem_docs = db.query_conv_memory(user_prompt, character_id, num_relevant_documents)
     world_knowledge_docs = db.query_world_knowledge(user_prompt, character_id, num_relevant_documents)
 
@@ -190,7 +138,7 @@ def compose_prompt(db: StandaloneDB, user_prompt: str, character_id: str, num_re
 
 
 class InterrogationLLM:
-    def __init__(self, db: StandaloneDB, num_relevant_docs: int = 5, require_lora: bool = True):
+    def __init__(self, db: BackendDBBridge, num_relevant_docs: int = 5, require_lora: bool = True):
         self.db = db
         self.num_relevant_docs = num_relevant_docs
         self.require_lora = require_lora
@@ -352,7 +300,12 @@ def infer_character_id_from_prompt(prompt: str) -> str:
     return "dr_tara"
 
 
-db = StandaloneDB()
+db = BackendDBBridge(
+    version="0.1.0",
+    session_name="llm_standalone",
+    character_model_path=Path(__file__).resolve().parent / "character_model.json",
+    data_path=Path(__file__).resolve().parent / "session_data",
+)
 require_lora = os.getenv("REQUIRE_LORA", "true").lower() == "true"
 llm_engine = InterrogationLLM(db, num_relevant_docs=5, require_lora=require_lora)
 
