@@ -17,16 +17,26 @@ class JsonlDataset(Dataset):
             user_input = (row.get("input") or "").strip()
             output = (row.get("output") or "").strip()
             prompt = f"### Instruction\n{instruction}\n\n### Input\n{user_input}\n\n### Response\n"
-            text = prompt + output
-            enc = tokenizer(
-                text,
+            prompt_enc = tokenizer(
+                prompt,
+                truncation=True,
+                max_length=max_length,
+                padding=False,
+            )
+            full_text = prompt + output + tokenizer.eos_token
+            full_enc = tokenizer(
+                full_text,
                 truncation=True,
                 max_length=max_length,
                 padding="max_length",
                 return_tensors="pt",
             )
-            item = {k: v[0] for k, v in enc.items()}
-            item["labels"] = item["input_ids"].clone()
+            item = {k: v[0] for k, v in full_enc.items()}
+            labels = item["input_ids"].clone()
+            prompt_len = min(len(prompt_enc["input_ids"]), max_length)
+            labels[:prompt_len] = -100
+            labels[item["attention_mask"] == 0] = -100
+            item["labels"] = labels
             self.examples.append(item)
 
     def __len__(self):

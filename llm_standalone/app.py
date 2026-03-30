@@ -310,6 +310,16 @@ class InterrogationLLM:
         reply = text.strip()
         if reply.lower().startswith("output only"):
             reply = ""
+        for prefix in [
+            "Player says:",
+            "Player says",
+            "player says:",
+            "player says",
+            "Player replies:",
+            "player replies:",
+        ]:
+            if reply.startswith(prefix):
+                reply = reply[len(prefix):].strip()
         for marker in [
             "Player replies:",
             "Player:",
@@ -323,15 +333,6 @@ class InterrogationLLM:
             return "I will answer directly: I am staying with my statement."
         return reply
 
-
-def infer_character_id_from_prompt(prompt: str) -> str:
-    p = (prompt or "").lower()
-    if "dr. tara" in p or "dr tara" in p or "tara" in p:
-        return "dr_tara"
-    if "leo" in p or "intern" in p:
-        return "intern_leo"
-    return "dr_tara"
-
     def generate_bytes(self, prompt, character_id, on_complete=None):
         full_response = []
         for token in self.generate_stream(prompt, character_id):
@@ -340,6 +341,15 @@ def infer_character_id_from_prompt(prompt: str) -> str:
                 yield token.encode("utf-8")
         if on_complete:
             on_complete(prompt, "".join(full_response), character_id)
+
+
+def infer_character_id_from_prompt(prompt: str) -> str:
+    p = (prompt or "").lower()
+    if "dr. tara" in p or "dr tara" in p or "tara" in p:
+        return "dr_tara"
+    if "leo" in p or "intern" in p:
+        return "intern_leo"
+    return "dr_tara"
 
 
 db = StandaloneDB()
