@@ -6,15 +6,15 @@
  */
 export const CHARACTERS = [
     {
-        id: "scientist_001",
-        displayName: "Scientist",
+        id: "tara_001",
+        displayName: "Tara",
         avatar: "./assets/scientist.svg",
-        inputPlaceholder: "Message the Scientist…",
+        inputPlaceholder: "Message the Tara",
     },
     {
-        id: "rat_001",
-        displayName: "Rat",
+        id: "leo_001",
+        displayName: "Leo",
         avatar: "./assets/rat.svg",
-        inputPlaceholder: "Message the Rat…",
+        inputPlaceholder: "Message the Leo",
     },
 ];
