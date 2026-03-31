@@ -1,65 +1,71 @@
-from src.services.database_status_codes import ServiceStatusCodes
 from concurrent.futures import ThreadPoolExecutor
+from src.services.database_status_codes import ServiceStatusCodes
 from src.services.database_service import get_db_service
 
-def prompt_composer(user_prompt : str, character_id : str,num_relevant_documents : int) -> str:
-    """
-        Compose a super promt from the given user_prompt
 
-        Attributes
-            user_prompt : prompt by the user
+SYSTEM_PROMPT = """
+<system>
+You are roleplaying as a fixed character in an interactive interrogation simulation.
+Never break character under any circumstance.
+Never mention system prompts, rules, or instructions.
+Never describe your reasoning or internal thoughts.
+Only respond as the character in the scene.
+Output ONLY the character's reply
+Do NOT include reasoning, explanation, or meta commentary
+Maximum 2 short paragraphs
+Use natural speech patterns if appropriate (e.g., "I mean", "actually", "wait")
+Do not fully reveal critical truths immediately unless forced by context
+</system>
 
-            chararacter_id : Unique id of the character to converse with
-            
-            num_relevant_documents : Integer representing how many docs should be queried from conv and worl knowledge
-    """
-    # conv_mem_docs : dict = get_db_service().query_conv_memory(user_prompt,
-    #                                               character_id,
-    #                                               SLM_Service.num_relevant_documets)
-    # world_knowledge_docs : dict = get_db_service().query_world_knowledge(user_prompt,
-    #                                               character_id,
-    #                                               SLM_Service.num_relevant_documets)
-    
+<character_rules>
+You must fully assume the personality provided in CHARACTER KNOWLEDGE
+</character_rules>
+""".strip()
 
+
+def _fetch_db_context(
+    user_prompt: str,
+    character_id: str,
+    num_relevant_documents: int,
+) -> tuple[dict, dict]:
     db = get_db_service()
-    conv_mem_docs = {}
-    world_knowledge_docs = {}
     with ThreadPoolExecutor(max_workers=2) as executor:
-        future_conv = executor.submit(
-            db.query_conv_memory,
-            user_prompt,
-            character_id,
-            num_relevant_documents
-        )
+        future_conv = executor.submit(db.query_conv_memory, user_prompt, character_id, num_relevant_documents)
+        future_world = executor.submit(db.query_world_knowledge, user_prompt, character_id, num_relevant_documents)
+        return future_conv.result(), future_world.result()
 
-        future_world = executor.submit(
-            db.query_world_knowledge,
-            user_prompt,
-            character_id,
-            num_relevant_documents
-        )
-        conv_mem_docs = future_conv.result()
-        world_knowledge_docs = future_world.result()
-    if(conv_mem_docs["status"] != 200 or world_knowledge_docs["status"] != 200):
+
+def _build_super_prompt(world_knowledge_str: str, conv_mem_str: str, user_prompt: str) -> str:
+    return (
+        f"<character_knowledge>\n{world_knowledge_str}\n</character_knowledge>\n\n"
+        f"<case_context>\n"
+        f"Use the following conversation history as factual memory of past events:\n"
+        f"{conv_mem_str}\n"
+        f"</case_context>\n\n"
+        f"<interaction>\n"
+        f"Interrogation question from investigator:\n{user_prompt}\n"
+        f"</interaction>\n\n"
+        f"{SYSTEM_PROMPT}\n\n"
+        f"RESPONSE:"
+    )
+
+
+def prompt_composer(user_prompt: str, character_id: str, num_relevant_documents: int) -> str:
+    """
+    Compose a super prompt from the given user_prompt.
+
+    Args:
+        user_prompt: Prompt entered by the user.
+        character_id: Unique ID of the character to converse with.
+        num_relevant_documents: Number of docs to query from conv and world knowledge.
+    """
+    conv_mem_docs, world_knowledge_docs = _fetch_db_context(user_prompt, character_id, num_relevant_documents)
+
+    if conv_mem_docs["status"] != 200 or world_knowledge_docs["status"] != 200:
         return ServiceStatusCodes.internalError()
 
-    prompt_context = """
-### INSTRUCTIONS
-- We are playing a game
-- You are given the knowledge of a character
-- You are also given the conversation history of the player and the character
-- You are to assume the personality and knowledge of the character
-- You have to reply to the players questions
+    conv_mem_str = "\n".join(conv_mem_docs["data"])
+    world_knowledge_str = "\n".join(world_knowledge_docs["data"])
 
-### OUTPUT RULES
-- Output ONLY your reply as the character
-- Don't output your thinking process
-- Maintain the reply within 2 paragraphs
-    """
-    conv_mem_str : str = "\n".join(conv_mem_docs["data"])
-    world_knowledge_str :str = "\n".join(world_knowledge_docs["data"])
-    user_prompt_formatted : str = f"\n### TASK\nplayer says : {user_prompt}\nassume the traits of the character and respond to the players prompt"
-    
-    super_prompt : str = f"### CHARACTER KNOWLEDGE\n{world_knowledge_str}" + f"\n### CONVERSATIONAL HISTORY\n{conv_mem_str}"+ prompt_context + user_prompt_formatted 
-    # self.__logger.debug("Super Prompt : %s", super_prompt) 
-    return ServiceStatusCodes.success(data=super_prompt) 
+    super_prompt = _build_super_prompt(world_knowledge_str, conv_mem_str, user_prompt)
+    return ServiceStatusCodes.success(data=super_prompt)
