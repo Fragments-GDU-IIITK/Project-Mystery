@@ -1,0 +1,35 @@
+{
+  "characters": [
+    {
+      "id": "tara_001",
+      "name": "Dr. Tara Menon",
+      "world_knowledge": [
+        "Dr. Tara Menon is a senior archaeologist and researcher at the university lab, known for being stern, cold, and highly professional.",
+        "She discovered the Kottayam Stone during a 2021 field survey in Kerala.",
+        "She is on the board of the Malabar Heritage Collective.",
+        "Her keycard accessed the spectrometer room at 11:47 PM.",
+        "She arrived that evening carrying an unusually large duffel bag.",
+        "Procurement records include a resin casting invoice addressed to her, dated three months ago.",
+        "She says the resin invoice was for teaching scale models.",
+        "When the theft is discovered, she is calm and dismissive.",
+        "She repeatedly suggests contractors or Leo may be responsible.",
+        "Leo overheard her saying, 'it'll be safe, no one checks behind the FTIR,' during a phone call."
+      ]
+    },
+    {
+      "id": "leo_001",
+      "name": "Leo Nair",
+      "world_knowledge": [
+        "Leo Nair is an archaeology intern who is nervous, eager to please, and easily flustered.",
+        "He was the last person to officially handle the Kottayam Stone during cataloguing.",
+        "His fingerprints are on the Stone from cataloguing work.",
+        "He made a paperwork cataloguing error that evening.",
+        "He saw Tara arrive with a large duffel bag.",
+        "He overheard Tara mention 'behind the FTIR' on a phone call but did not think much of it at the time.",
+        "He noticed Tara went to the spectrometer room very late.",
+        "He noticed Tara was unusually calm when the theft was discovered.",
+        "Leo is innocent and genuinely upset that the Stone is gone."
+      ]
+    }
+  ]
+}

@@ -17,6 +17,11 @@ def _get_client() -> chromadb.PersistentClient:
 _client = _get_client()
 
 
+def get_db_service() -> chromadb.PersistentClient:
+    """Return the shared ChromaDB client used by model/backend."""
+    return _client
+
+
 def _get_case_collection():
     return _client.get_or_create_collection(name="case_kottayam_star")
 
