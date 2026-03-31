@@ -12,11 +12,11 @@ import torch
 from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
 from peft import PeftModel
-from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TextIteratorStreamer
 
 from database_manager import get_db_service
 
-BASE_MODEL_NAME = "HuggingFaceTB/SmolLM-135M-Instruct"
+BASE_MODEL_NAME = "unsloth/llama-3-8b-instruct-bnb-4bit"
 ADAPTER_TARA = Path(__file__).resolve().parent / "adapters" / "tara"
 ADAPTER_LEO = Path(__file__).resolve().parent / "adapters" / "leo"
 CHARACTER_MODEL_PATH = Path(__file__).resolve().parent / "character_model.json"
@@ -147,10 +147,21 @@ def add_memory(
 
 
 def build_prompt(system: str, user_message: str, history: list) -> str:
-    prompt = f"{system}\n\nSetting: You are in the archaeology lab. A detective is questioning you right now.\n\n"
-    for turn in history[-2:]:
-        prompt += f"Detective: {turn['player']}\nYou: {turn['character']}\n\n"
-    prompt += f"Detective: {user_message}\nYou:"
+    return (
+        f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n"
+        f"{system}<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n"
+        f"{user_message}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
+    )
+
+
+def build_user_input(user_message: str, history: List[Dict[str, str]]) -> str:
+    prompt = ""
+    for turn in history[-3:]:
+        prompt += (
+            f"Previous detective question: {turn['player']}\n"
+            f"Previous answer: {turn['character']}\n\n"
+        )
+    prompt += f"Current detective question: {user_message}"
     return prompt
 
 
@@ -179,12 +190,22 @@ if tokenizer.pad_token is None:
     tokenizer.pad_token = tokenizer.eos_token
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-dtype = torch.float16 if torch.cuda.is_available() else torch.float32
-print(f"[INFO] Loading base model on {device}...")
-base_model = AutoModelForCausalLM.from_pretrained(BASE_MODEL_NAME, torch_dtype=dtype).to(device)
+quantization_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_compute_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
+)
+print(f"[INFO] Loading 4-bit base model on {device}...")
+base_model = AutoModelForCausalLM.from_pretrained(
+    BASE_MODEL_NAME,
+    quantization_config=quantization_config,
+    device_map="auto",
+)
 base_model.eval()
 
-CHARACTER_MODELS: Dict[str, torch.nn.Module] = {}
+CHARACTER_MODELS: Dict[str, str] = {}
+generation_model: Optional[PeftModel] = None
 ADAPTER_LOAD_ERROR: Optional[str] = None
 
 missing_paths = []
@@ -203,13 +224,13 @@ if missing_paths:
     print(f"[ERROR] {ADAPTER_LOAD_ERROR}")
 else:
     print("[INFO] Loading LoRA adapters...")
-    tara_model = PeftModel.from_pretrained(copy.deepcopy(base_model), str(ADAPTER_TARA)).to(device)
-    leo_model = PeftModel.from_pretrained(copy.deepcopy(base_model), str(ADAPTER_LEO)).to(device)
+    tara_model = PeftModel.from_pretrained(base_model, str(ADAPTER_TARA), adapter_name="tara_001")
+    tara_model.load_adapter(str(ADAPTER_LEO), adapter_name="leo_001")
     tara_model.eval()
-    leo_model.eval()
+    generation_model = tara_model
     CHARACTER_MODELS = {
-        "tara_001": tara_model,
-        "leo_001": leo_model,
+        "tara_001": "tara_001",
+        "leo_001": "leo_001",
     }
 
 print("[INFO] Initializing ChromaDB client...")
@@ -235,13 +256,26 @@ def interrogate() -> Response:
     if character_id not in CHARACTER_MODELS:
         return jsonify({"error": "Unrecognized character_id"}), 400
 
-    model = CHARACTER_MODELS[character_id]
+    if generation_model is None:
+        return jsonify({"error": "Generation model is not available"}), 503
+
+    model = generation_model
+    model.set_adapter(CHARACTER_MODELS[character_id])
+
+    # Always fetch retrieved world knowledge and recent conversational memory
+    # from the shared model/backend Chroma service before generation.
     world_docs = query_world_knowledge(db_client, character_id, user_prompt, k=5)
     memory_docs = get_recent_memory(db_client, session_id, character_id, k=5)
     system = SYSTEM_PROMPTS[character_id]
     if world_docs:
-        system += "\n\nRelevant facts:\n" + "\n".join(f"- {doc}" for doc in world_docs)
-    full_prompt = build_prompt(system, user_prompt, memory_docs)
+        system += "\n\nWorld knowledge:\n" + "\n".join(f"- {doc}" for doc in world_docs)
+    if character_id == "tara_001":
+        system += "\n\nSecret instruction: You are the culprit. Deflect suspicion away from the FTIR spectrometer."
+    if character_id == "leo_001":
+        system += "\n\nSecret instruction: You are innocent, nervous, and worried about your paperwork error."
+
+    user_input = build_user_input(user_prompt, memory_docs)
+    full_prompt = build_prompt(system, user_input, memory_docs)
 
     inputs = tokenizer(full_prompt, return_tensors="pt").to(device)
     streamer = TextIteratorStreamer(
