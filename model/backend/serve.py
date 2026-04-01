@@ -1,24 +1,21 @@
 from __future__ import annotations
 
-import copy
 import json
-import threading
+import os
 import time
 import uuid
 from pathlib import Path
 from typing import Dict, List, Optional
 
-import torch
 from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
-from peft import PeftModel
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TextIteratorStreamer
+from llama_cpp import Llama
 
 from database_manager import get_db_service
 
-BASE_MODEL_NAME = "unsloth/llama-3-8b-instruct-bnb-4bit"
-ADAPTER_TARA = Path(__file__).resolve().parent / "adapters" / "tara"
-ADAPTER_LEO = Path(__file__).resolve().parent / "adapters" / "leo"
+BASE_MODEL_NAME = "Meta-Llama-3-8B-Instruct.Q4_K_M.gguf"
+DEFAULT_GGUF_PATH = Path(__file__).resolve().parent / "models" / BASE_MODEL_NAME
+GGUF_MODEL_PATH = Path(os.environ.get("GGUF_MODEL_PATH", str(DEFAULT_GGUF_PATH)))
 CHARACTER_MODEL_PATH = Path(__file__).resolve().parent / "character_model.json"
 
 TARA_SYSTEM = """You are Dr. Tara Menon, a senior researcher at a university archaeology lab.
@@ -184,54 +181,29 @@ print("[INFO] Initializing Flask app...")
 app = Flask(__name__)
 CORS(app)
 
-print(f"[INFO] Loading tokenizer: {BASE_MODEL_NAME}")
-tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL_NAME)
-if tokenizer.pad_token is None:
-    tokenizer.pad_token = tokenizer.eos_token
+generation_model: Optional[Llama] = None
+MODEL_LOAD_ERROR: Optional[str] = None
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-quantization_config = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_quant_type="nf4",
-    bnb_4bit_use_double_quant=True,
-    bnb_4bit_compute_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
-)
-print(f"[INFO] Loading 4-bit base model on {device}...")
-base_model = AutoModelForCausalLM.from_pretrained(
-    BASE_MODEL_NAME,
-    quantization_config=quantization_config,
-    device_map="auto",
-)
-base_model.eval()
-
-CHARACTER_MODELS: Dict[str, str] = {}
-generation_model: Optional[PeftModel] = None
-ADAPTER_LOAD_ERROR: Optional[str] = None
-
-missing_paths = []
-if not ADAPTER_TARA.exists():
-    missing_paths.append(str(ADAPTER_TARA))
-if not ADAPTER_LEO.exists():
-    missing_paths.append(str(ADAPTER_LEO))
-
-if missing_paths:
-    ADAPTER_LOAD_ERROR = (
-        "Adapter directories are missing. Train adapters first:\n"
-        "- python training/train_tara.py\n"
-        "- python training/train_leo.py\n"
-        f"Missing paths: {', '.join(missing_paths)}"
+if not GGUF_MODEL_PATH.exists():
+    MODEL_LOAD_ERROR = (
+        f"GGUF model file not found at {GGUF_MODEL_PATH}. "
+        "Download a GGUF file such as Meta-Llama-3-8B-Instruct.Q4_K_M.gguf "
+        "and set GGUF_MODEL_PATH if you store it elsewhere."
     )
-    print(f"[ERROR] {ADAPTER_LOAD_ERROR}")
+    print(f"[ERROR] {MODEL_LOAD_ERROR}")
 else:
-    print("[INFO] Loading LoRA adapters...")
-    tara_model = PeftModel.from_pretrained(base_model, str(ADAPTER_TARA), adapter_name="tara_001")
-    tara_model.load_adapter(str(ADAPTER_LEO), adapter_name="leo_001")
-    tara_model.eval()
-    generation_model = tara_model
-    CHARACTER_MODELS = {
-        "tara_001": "tara_001",
-        "leo_001": "leo_001",
-    }
+    try:
+        print(f"[INFO] Loading GGUF model from {GGUF_MODEL_PATH}...")
+        generation_model = Llama(
+            model_path=str(GGUF_MODEL_PATH),
+            n_ctx=4096,
+            n_threads=max(1, (os.cpu_count() or 4) - 1),
+            n_gpu_layers=0,
+            verbose=False,
+        )
+    except Exception as exc:
+        MODEL_LOAD_ERROR = f"Failed to load GGUF model: {exc}"
+        print(f"[ERROR] {MODEL_LOAD_ERROR}")
 
 print("[INFO] Initializing ChromaDB client...")
 db_client = get_db_service()
@@ -250,17 +222,14 @@ def interrogate() -> Response:
     if not character_id or not user_prompt or not session_id:
         return jsonify({"error": "character_id, prompt, and session_id are required"}), 400
 
-    if ADAPTER_LOAD_ERROR is not None:
-        return jsonify({"error": ADAPTER_LOAD_ERROR}), 503
+    if MODEL_LOAD_ERROR is not None:
+        return jsonify({"error": MODEL_LOAD_ERROR}), 503
 
-    if character_id not in CHARACTER_MODELS:
+    if character_id not in SYSTEM_PROMPTS:
         return jsonify({"error": "Unrecognized character_id"}), 400
 
     if generation_model is None:
         return jsonify({"error": "Generation model is not available"}), 503
-
-    model = generation_model
-    model.set_adapter(CHARACTER_MODELS[character_id])
 
     # Always fetch retrieved world knowledge and recent conversational memory
     # from the shared model/backend Chroma service before generation.
@@ -277,34 +246,22 @@ def interrogate() -> Response:
     user_input = build_user_input(user_prompt, memory_docs)
     full_prompt = build_prompt(system, user_input, memory_docs)
 
-    inputs = tokenizer(full_prompt, return_tensors="pt").to(device)
-    streamer = TextIteratorStreamer(
-        tokenizer,
-        skip_prompt=True,
-        skip_special_tokens=True,
-    )
-
-    generate_kwargs = dict(
-        **inputs,
-        streamer=streamer,
-        max_new_tokens=120,
-        do_sample=True,
-        temperature=0.6,
-        top_p=0.9,
-        top_k=50,
-        repetition_penalty=1.2,
-        pad_token_id=tokenizer.eos_token_id,
-        eos_token_id=tokenizer.eos_token_id,
-    )
-
-    thread = threading.Thread(target=model.generate, kwargs=generate_kwargs)
-    thread.start()
-
     def event_stream():
         raw_chunks: List[str] = []
         streamed_text = ""
         try:
-            for token in streamer:
+            stream = generation_model.create_completion(
+                prompt=full_prompt,
+                max_tokens=120,
+                temperature=0.6,
+                top_p=0.9,
+                top_k=50,
+                repeat_penalty=1.2,
+                stop=["<|eot_id|>", "<|end_of_text|>"],
+                stream=True,
+            )
+            for chunk in stream:
+                token = chunk["choices"][0].get("text", "")
                 if token:
                     raw_chunks.append(token)
                     cleaned = clean_response("".join(raw_chunks))
@@ -361,4 +318,6 @@ def accuse():
 
 
 if __name__ == "__main__":
-    app.run(port=5001, debug=False)
+    print("[INFO] Starting Flask server on http://127.0.0.1:5000")
+    # debug=False is better when loading heavy models
+    app.run(host="127.0.0.1", port=5000, debug=False)
