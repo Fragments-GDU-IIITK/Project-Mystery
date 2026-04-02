@@ -22,19 +22,18 @@ def create_app() -> Flask:
         payload = request.get_json(silent=True) or {}
         character_id = payload.get("character_id")
         message = payload.get("message")
-
+        
         if not character_id or not message:
             return jsonify({"error": "character_id and message are required"}), 400
 
         initialize_case_data()
         context = retrieve_context(query=message, character_id=character_id)
-
+       
         def event_stream():
             try:
                 for token in llm_engine.generate_stream(
                     prompt=message,
                     character_id=character_id,
-                    context=context,
                 ):
                     if token:
                         yield f"data: {token}\n\n"

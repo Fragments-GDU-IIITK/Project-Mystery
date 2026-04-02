@@ -1,4 +1,15 @@
-{% for message in messages %}{{'<|im_start|>' + message['role'] + '
-' + message['content'] + '<|im_end|>' + '
-'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant
-' }}{% endif %}
+{% for message in messages %}
+{% if message['role'] == 'user' %}
+{{ '<|user|>
+' + message['content'] + eos_token }}
+{% elif message['role'] == 'system' %}
+{{ '<|system|>
+' + message['content'] + eos_token }}
+{% elif message['role'] == 'assistant' %}
+{{ '<|assistant|>
+'  + message['content'] + eos_token }}
+{% endif %}
+{% if loop.last and add_generation_prompt %}
+{{ '<|assistant|>' }}
+{% endif %}
+{% endfor %}
