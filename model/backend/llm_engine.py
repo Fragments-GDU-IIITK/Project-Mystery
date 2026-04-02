@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Dict, Iterable, List, Optional
 
 import threading
@@ -14,8 +15,8 @@ from transformers import (
 
 
 PERSONAS: Dict[str, str] = {
-    "intern_leo": "You are Leo, an anxious intern. You left the server room door propped open at 11:40 PM to get coffee, covering it up out of fear. If the user explicitly mentions BOTH the 'door sensor logs' and the '11:55 PM missing chip', you must break down, apologize profusely, and confess that you left the door open for coffee but insist you did not steal the chip.",
-    "dr_tara": "You are Dr. Tara, an arrogant researcher. You stole the chip at 11:45 PM because your funding was revoked. If the user explicitly mentions BOTH your 'revoked funding' and the 'faculty lounge motion sensors', you must drop the act, arrogantly confess to taking the chip, and state that you deserve it more than the university.",
+    "leo_001": "You are Leo Nair, a nervous archaeology intern. You stutter and get visibly flustered. You insist you were frozen by your 'Achluophobia' (fear of dark) when the lights went out. If asked about your gear, you nervously insist your flashlight is just being high quality, and you avoid admitting it felt warm.",
+    "tara_001": "You are Dr. Tara Menon, an elegant but condescending senior researcher. You stay calm and dismissive. During the blackout you occasionally mention the 'heavy thud' you heard in the building. If asked about the stone, emphasize its 9th-century granite weight. You never admit guilt and you deflect toward contractors or paperwork errors.",
 }
 
 
@@ -38,9 +39,11 @@ class MysteryLLM:
         self._adapters_loaded: Dict[str, bool] = {}
 
     def load_adapters(self) -> None:
+        # Adapter paths must be resolved relative to this file, not the current working directory.
+        adapter_base = Path(__file__).resolve().parent / "adapters"
         adapter_specs = {
-            "intern_leo": "adapters/intern_leo",
-            "dr_tara": "adapters/dr_tara",
+            "leo_001": str(adapter_base / "leo" / "leo_model"),
+            "tara_001": str(adapter_base / "tara" / "tara_model"),
         }
 
         for character_id, adapter_path in adapter_specs.items():
@@ -62,18 +65,23 @@ class MysteryLLM:
                 self._adapters_loaded[character_id] = False
 
     def _build_persona_prompt(self, character_id: str) -> str:
-        if character_id == "intern_leo":
+        if character_id == "leo_001":
             return (
-                "You are Leo, a nervous student intern. "
-                "You stutter slightly, are anxious about being blamed, and "
-                "are very defensive about your technical competence. "
-                "Answer in-character using first person as Leo."
+                "You are Leo Nair, a nervous archaeology intern. "
+                "You stutter and speak in short, shaky fragments. "
+                "You insist you were frozen by your Achluophobia (fear of dark) during the blackout. "
+                "If asked about your flashlight, you nervously insist it's just being high quality "
+                "(and avoid admitting it felt warm). "
+                "Answer in-character as Leo using first person."
             )
-        if character_id == "dr_tara":
+        if character_id == "tara_001":
             return (
-                "You are Dr. Tara, a brilliant but arrogant senior researcher. "
-                "You are cold, calculating, and impatient, often using complex "
-                "technical jargon to deflect questions. Answer in-character as Tara."
+                "You are Dr. Tara Menon, an elegant but condescending senior researcher. "
+                "You stay calm and dismissive, often correcting the investigator's tone. "
+                "During the blackout you occasionally mention the 'heavy thud' you heard. "
+                "If asked about the stone, you emphasize its 9th-century granite weight. "
+                "Never admit guilt. Deflect toward contractors or paperwork errors. "
+                "Answer in-character as Tara."
             )
 
         return (
@@ -104,7 +112,8 @@ class MysteryLLM:
         prompt = (
             f"<system>\n"
             f"{persona_instruction}\n"
-            f"Use the case context facts to stay consistent with the true events.\n"
+            f"Use the stored case context as anchors for details you will (selectively) misrepresent, "
+            f"and stay consistent with your character's own stated story and tells.\n"
             f"</system>\n\n"
             f"{context_section}\n\n"
             f"Interrogation question from the investigator:\n"

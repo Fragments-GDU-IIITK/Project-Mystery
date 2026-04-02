@@ -47,21 +47,21 @@ def create_app() -> Flask:
     def accuse():
         payload = request.get_json(silent=True) or {}
         character_id = payload.get("character_id")
-        reasoning = payload.get("reasoning")
+        reasoning = payload.get("reasoning")  # optional; not used for scoring
 
-        if not character_id or not reasoning:
+        if not character_id:
             return (
                 jsonify(
                     {
                         "status": "failure",
-                        "message": "character_id and reasoning are required",
+                        "message": "character_id is required",
                         "game_over": False,
                     }
                 ),
                 400,
             )
 
-        if character_id == "dr_tara":
+        if character_id == "tara_001":
             return jsonify(
                 {
                     "status": "success",
