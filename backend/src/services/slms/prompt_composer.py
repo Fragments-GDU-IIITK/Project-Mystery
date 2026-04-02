@@ -36,18 +36,34 @@ def _fetch_db_context(
 
 
 def _build_super_prompt(world_knowledge_str: str, conv_mem_str: str, user_prompt: str) -> str:
-    return (
-        f"<character_knowledge>\n{world_knowledge_str}\n</character_knowledge>\n\n"
-        f"<case_context>\n"
-        f"Use the following conversation history as factual memory of past events:\n"
-        f"{conv_mem_str}\n"
-        f"</case_context>\n\n"
-        f"<interaction>\n"
-        f"Interrogation question from investigator:\n{user_prompt}\n"
-        f"</interaction>\n\n"
-        f"{SYSTEM_PROMPT}\n\n"
-        f"RESPONSE:"
+    """
+    Build prompt STRICTLY matching training format.
+    """
+
+    # 🔥 Merge all context into a single "fact" string (THIS IS KEY)
+    combined_context = ""
+
+    if world_knowledge_str:
+        combined_context += world_knowledge_str.strip()
+
+    if conv_mem_str:
+        combined_context += "\n" + conv_mem_str.strip()
+
+    # Optional: truncate to avoid overflow (VERY important)
+    combined_context = combined_context[:500]
+
+    prompt = (
+        f"<|system|>\n"
+        f"Stay in character and use this fact: {combined_context}\n"
+        f"<|endoftext|>\n"
+        f"<|user|>\n"
+        f"{user_prompt}\n"
+        f"<|endoftext|>\n"
+        f"<|assistant|>\n"
     )
+
+    return prompt
+    
 
 
 def prompt_composer(user_prompt: str, character_id: str, num_relevant_documents: int) -> str:
