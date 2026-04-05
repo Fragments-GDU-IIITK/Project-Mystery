@@ -14,11 +14,13 @@ from transformers import (
 
 class MysteryLLM:
     def __init__(self) -> None:
-        model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+        model_name = "microsoft/Phi-3-mini-4k-instruct"
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+        
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
@@ -32,6 +34,9 @@ class MysteryLLM:
 
         self._adapters_loaded: Dict[str, bool] = {}
 
+    
+    
+    
     def load_adapters(self) -> None:
         adapter_specs = {
             "intern_leo": "adapters/intern_leo",
@@ -53,49 +58,62 @@ class MysteryLLM:
                     )
 
                 self._adapters_loaded[character_id] = True
-            except Exception:
-                self._adapters_loaded[character_id] = False
+                print(f"Loaded adapter: {character_id}")
 
+            except Exception as e:
+                self._adapters_loaded[character_id] = False
+                print(f"Failed to load {character_id}: {e}")
+
+    
+    
+    
     def generate_stream(
         self,
         prompt: str,
         character_id: str,
         max_new_tokens: int = 120,
     ):
+        
         if isinstance(self.model, PeftModel) and self._adapters_loaded.get(character_id):
             try:
                 self.model.set_adapter(character_id)
             except Exception:
                 pass
 
+        
         inputs = self.tokenizer(
             prompt,
             return_tensors="pt",
             add_special_tokens=False
         )
 
-        # 🔥 CRITICAL: move inputs correctly
         inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
 
         streamer = TextIteratorStreamer(
             self.tokenizer,
-            skip_prompt=True,            # ✅ we don't want prompt
-            skip_special_tokens=True,    # ✅ cleaner output
+            skip_prompt=True,
+            skip_special_tokens=True,
         )
 
         generate_kwargs = dict(
             **inputs,
             max_new_tokens=max_new_tokens,
+            min_new_tokens=20,              
             do_sample=True,
             top_p=0.9,
-            temperature=0.5,
+            temperature=0.7,
+            repetition_penalty=1.1,         
+            eos_token_id=self.tokenizer.eos_token_id,
             pad_token_id=self.tokenizer.eos_token_id,
             streamer=streamer,
         )
 
-        thread = threading.Thread(target=self.model.generate, kwargs=generate_kwargs)
+        thread = threading.Thread(
+            target=self.model.generate,
+            kwargs=generate_kwargs
+        )
         thread.start()
 
-        # ✅ STREAM RAW TOKENS
+        
         for token in streamer:
             yield token
