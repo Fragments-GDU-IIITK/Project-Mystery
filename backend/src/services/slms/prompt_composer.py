@@ -44,13 +44,12 @@ def _build_super_prompt(world_knowledge_str: str, conv_mem_str: str, user_prompt
     combined_context = ""
 
     if world_knowledge_str:
-        combined_context += world_knowledge_str.strip()
+        combined_context += world_knowledge_str.strip()[:500]
 
     if conv_mem_str:
-        combined_context += "\n" + conv_mem_str.strip()
+        combined_context += "\n" + conv_mem_str.strip()[:500]
 
-    # Optional: truncate to avoid overflow (VERY important)
-    combined_context = combined_context[:500]
+
 
     prompt = (
         f"<|system|>\n"
